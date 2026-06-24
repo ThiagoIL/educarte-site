@@ -88,8 +88,25 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
       let imageUrl: string;
 
       if (supabase) {
-        imageUrl = await uploadFileToSupabase(file);
-        toast.success("Imagem enviada para o Supabase Storage com sucesso!");
+        try {
+          imageUrl = await uploadFileToSupabase(file);
+          toast.success("Imagem enviada para o Supabase Storage com sucesso!");
+        } catch (supabaseError: any) {
+          console.warn("Falha no upload para o Supabase, tentando upload local como fallback:", supabaseError);
+          
+          // Fallback para upload local
+          const response = await uploadFile(file);
+          if (!response.ok) {
+            throw new Error(`Falha no upload local após erro no Supabase: ${supabaseError.message || "Bucket não encontrado"}`);
+          }
+          const data = await response.json();
+          imageUrl = data.url;
+          
+          toast.warning(
+            `Aviso: Não foi possível salvar no Supabase (${supabaseError.message || "Bucket não encontrado"}). A imagem foi salva localmente como alternativa. Certifique-se de criar o bucket público chamado 'images' no painel do seu Supabase.`,
+            { duration: 8000 }
+          );
+        }
       } else {
         // Fallback robusto se o Supabase não estiver configurado ainda
         const response = await uploadFile(file);
