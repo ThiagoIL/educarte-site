@@ -11,8 +11,13 @@ export function Teachers({ content = {} }: TeachersProps) {
     <section id="profissionais" className="py-20 bg-gradient-to-br from-purple-50 via-white to-pink-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm mb-4">
-            Nossas Profissionais
+          <div className="inline-block mb-4">
+            <EditableText 
+              contentKey="teachers_badge" 
+              defaultValue="Nossas Profissionais" 
+              as="span" 
+              className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold block"
+            />
           </div>
           <EditableText 
             contentKey="teachers_title" 
@@ -63,13 +68,18 @@ export function Teachers({ content = {} }: TeachersProps) {
               />
 
               <div className="flex items-center gap-2 text-gray-600">
-                <GraduationCap className="w-5 h-5 text-purple-600" />
-                <span className="font-medium">10 anos de experiência</span>
+                <GraduationCap className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                <EditableText 
+                  contentKey="teacher1_exp" 
+                  defaultValue="10 anos de experiência" 
+                  as="span" 
+                  className="font-medium text-gray-600 block"
+                />
               </div>
 
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <Award className="w-5 h-5 text-pink-600" />
+                  <Award className="w-5 h-5 text-pink-600 flex-shrink-0" />
                   <span className="font-bold text-gray-900">Especialidades:</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -85,10 +95,13 @@ export function Teachers({ content = {} }: TeachersProps) {
               </div>
 
               <div className="flex items-center gap-2 text-gray-600 pt-2 border-t">
-                <Heart className="w-5 h-5 text-pink-600" />
-                <span className="text-sm italic">
-                  "Dedicada a fazer a diferença na vida dos alunos"
-                </span>
+                <Heart className="w-5 h-5 text-pink-600 flex-shrink-0" />
+                <EditableText 
+                  contentKey="teacher1_quote" 
+                  defaultValue="Dedicada a fazer a diferença na vida dos alunos" 
+                  as="span" 
+                  className="text-sm italic text-gray-600 block"
+                />
               </div>
             </div>
           </div>
@@ -127,13 +140,18 @@ export function Teachers({ content = {} }: TeachersProps) {
               />
 
               <div className="flex items-center gap-2 text-gray-600">
-                <GraduationCap className="w-5 h-5 text-purple-600" />
-                <span className="font-medium">8 anos de experiência</span>
+                <GraduationCap className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                <EditableText 
+                  contentKey="teacher2_exp" 
+                  defaultValue="8 anos de experiência" 
+                  as="span" 
+                  className="font-medium text-gray-600 block"
+                />
               </div>
 
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <Award className="w-5 h-5 text-pink-600" />
+                  <Award className="w-5 h-5 text-pink-600 flex-shrink-0" />
                   <span className="font-bold text-gray-900">Especialidades:</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -149,23 +167,32 @@ export function Teachers({ content = {} }: TeachersProps) {
               </div>
 
               <div className="flex items-center gap-2 text-gray-600 pt-2 border-t">
-                <Heart className="w-5 h-5 text-pink-600" />
-                <span className="text-sm italic">
-                  "Dedicada a fazer a diferença na vida dos alunos"
-                </span>
+                <Heart className="w-5 h-5 text-pink-600 flex-shrink-0" />
+                <EditableText 
+                  contentKey="teacher2_quote" 
+                  defaultValue="Dedicada a fazer a diferença na vida dos alunos" 
+                  as="span" 
+                  className="text-sm italic text-gray-600 block"
+                />
               </div>
             </div>
           </div>
         </div>
 
         <div className="mt-12 text-center">
-          <div className="inline-block bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white max-w-2xl">
-            <h3 className="text-2xl font-bold mb-3">Por que escolher o EDUCART?</h3>
-            <p className="text-purple-100 font-medium">
-              Nossas professoras possuem formação acadêmica sólida, experiência prática em sala de aula 
-              e, acima de tudo, paixão por ensinar. Cada aula é planejada com carinho para garantir 
-              o melhor aprendizado.
-            </p>
+          <div className="inline-block bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-8 md:p-12 text-white max-w-2xl w-full">
+            <EditableText 
+              contentKey="teachers_why_title" 
+              defaultValue="Por que escolher o EDUCART?" 
+              as="h3" 
+              className="text-2xl font-bold mb-3 block text-white"
+            />
+            <EditableText 
+              contentKey="teachers_why_description" 
+              defaultValue="Nossas professoras possuem formação acadêmica sólida, experiência prática em sala de aula e, acima de tudo, paixão por ensinar. Cada aula é planejada com carinho para garantir o melhor aprendizado." 
+              as="p" 
+              className="text-purple-100 font-medium block"
+            />
           </div>
         </div>
       </div>

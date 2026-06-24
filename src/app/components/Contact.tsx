@@ -33,8 +33,13 @@ export function Contact({ content = {} }: ContactProps) {
     <section id="contato" className="py-20 bg-gradient-to-br from-purple-50 via-pink-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm mb-4">
-            Entre em Contato
+          <div className="inline-block mb-4">
+            <EditableText 
+              contentKey="contact_badge" 
+              defaultValue="Entre em Contato" 
+              as="span" 
+              className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold block"
+            />
           </div>
           <EditableText 
             contentKey="contact_title" 
@@ -121,13 +126,33 @@ export function Contact({ content = {} }: ContactProps) {
             </div>
 
             <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-8 text-white">
-              <h3 className="text-2xl font-bold mb-3">Horário de Atendimento</h3>
+              <EditableText 
+                contentKey="contact_hours_title" 
+                defaultValue="Horário de Atendimento" 
+                as="h3" 
+                className="text-2xl font-bold mb-3 block text-white"
+              />
               <div className="space-y-2 text-purple-100">
-                <p>Segunda a Sexta: 8h às 20h</p>
-                <p>Sábado: 8h às 14h</p>
-                <p className="pt-2 border-t border-purple-400 mt-4">
-                  🎁 Primeira aula experimental GRATUITA!
-                </p>
+                <EditableText 
+                  contentKey="contact_hours_week" 
+                  defaultValue="Segunda a Sexta: 8h às 20h" 
+                  as="p" 
+                  className="text-purple-100 block"
+                />
+                <EditableText 
+                  contentKey="contact_hours_sat" 
+                  defaultValue="Sábado: 8h às 14h" 
+                  as="p" 
+                  className="text-purple-100 block"
+                />
+                <div className="pt-2 border-t border-purple-400 mt-4">
+                  <EditableText 
+                    contentKey="contact_hours_promo" 
+                    defaultValue="🎁 Primeira aula experimental GRATUITA!" 
+                    as="p" 
+                    className="text-purple-100 font-bold block"
+                  />
+                </div>
               </div>
             </div>
           </div>

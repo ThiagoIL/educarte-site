@@ -1,5 +1,6 @@
 import { BookOpen, Instagram, Facebook, Mail } from "lucide-react";
 import { useAdmin } from "../context/AdminContext";
+import { EditableText } from "./EditableText";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -20,11 +21,19 @@ export function Footer() {
               <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-2 rounded-lg">
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold">EDUCART</span>
+              <EditableText
+                contentKey="footer_brand_name"
+                defaultValue="EDUCART"
+                as="span"
+                className="text-2xl font-bold block text-white"
+              />
             </div>
-            <p className="text-gray-400 mb-4">
-              Reforço escolar de qualidade do 1° ao 9° ano. Educação que transforma vidas.
-            </p>
+            <EditableText
+              contentKey="footer_description"
+              defaultValue="Reforço escolar de qualidade do 1° ao 9° ano. Educação que transforma vidas."
+              as="p"
+              className="text-gray-400 mb-4 block text-sm"
+            />
             <div className="flex gap-4">
               <a
                 href="#"
@@ -116,7 +125,15 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-          <p>© {currentYear} EDUCART - Todos os direitos reservados.</p>
+          <p className="flex items-center justify-center gap-1 flex-wrap text-sm">
+            <span>© {currentYear} </span>
+            <EditableText
+              contentKey="footer_copyright"
+              defaultValue="EDUCART - Todos os direitos reservados."
+              as="span"
+              className="text-gray-400 font-inherit block"
+            />
+          </p>
         </div>
       </div>
     </footer>

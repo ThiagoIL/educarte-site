@@ -1,6 +1,7 @@
 import { BookOpen, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useAdmin } from "../context/AdminContext";
+import { EditableText } from "./EditableText";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,9 +28,12 @@ export function Header() {
             <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-2 rounded-lg">
               <BookOpen className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              EDUCART
-            </span>
+            <EditableText
+              contentKey="brand_name"
+              defaultValue="EDUCART"
+              as="span"
+              className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent block"
+            />
           </div>
 
           {/* Desktop Menu */}

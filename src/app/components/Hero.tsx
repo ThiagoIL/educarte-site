@@ -21,8 +21,13 @@ export function Hero({ content = {} }: HeroProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <div className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm">
-              ✨ Reforço Escolar de Qualidade
+            <div className="inline-block">
+              <EditableText 
+                contentKey="hero_badge" 
+                defaultValue="✨ Reforço Escolar de Qualidade" 
+                as="span" 
+                className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold block"
+              />
             </div>
             
             <EditableText 
@@ -41,9 +46,14 @@ export function Hero({ content = {} }: HeroProps) {
 
             <div className="flex flex-wrap gap-4">
               <button
-                onClick={() => scrollToSection("contato")}
-                disabled={isAdminMode}
-                className={`transition-all ${isAdminMode ? "bg-gray-300 text-gray-500 cursor-not-allowed px-8 py-4 rounded-full" : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-xl transform hover:scale-105 cursor-pointer px-8 py-4 rounded-full"}`}
+                onClick={(e) => {
+                  if (isAdminMode) {
+                    e.preventDefault();
+                    return;
+                  }
+                  scrollToSection("contato");
+                }}
+                className={`transition-all ${isAdminMode ? "bg-purple-50 text-purple-900 border border-purple-200 px-8 py-4 rounded-full" : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-xl transform hover:scale-105 cursor-pointer px-8 py-4 rounded-full"}`}
               >
                 <EditableText 
                   contentKey="hero_cta" 
@@ -53,41 +63,81 @@ export function Hero({ content = {} }: HeroProps) {
                 />
               </button>
               <button
-                onClick={() => scrollToSection("sobre")}
-                disabled={isAdminMode}
-                className={`transition-all ${isAdminMode ? "border-2 border-gray-300 text-gray-400 cursor-not-allowed px-8 py-4 rounded-full" : "border-2 border-purple-600 text-purple-600 px-8 py-4 rounded-full hover:bg-purple-50 cursor-pointer"}`}
+                onClick={(e) => {
+                  if (isAdminMode) {
+                    e.preventDefault();
+                    return;
+                  }
+                  scrollToSection("sobre");
+                }}
+                className={`transition-all ${isAdminMode ? "border-2 border-dashed border-purple-300 text-purple-700 px-8 py-4 rounded-full hover:bg-purple-50" : "border-2 border-purple-600 text-purple-600 px-8 py-4 rounded-full hover:bg-purple-50 cursor-pointer"}`}
               >
-                Saiba Mais
+                <EditableText 
+                  contentKey="hero_secondary_cta" 
+                  defaultValue="Saiba Mais" 
+                  as="span" 
+                  className="font-inherit"
+                />
               </button>
             </div>
 
 
             <div className="flex flex-wrap gap-6 pt-4">
               <div className="flex items-center gap-2">
-                <div className="bg-purple-100 p-2 rounded-lg">
+                <div className="bg-purple-100 p-2 rounded-lg flex-shrink-0">
                   <Users className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <div className="font-bold text-gray-900">200+</div>
-                  <div className="text-sm text-gray-600">Alunos</div>
+                  <EditableText 
+                    contentKey="hero_stat1_value" 
+                    defaultValue="200+" 
+                    as="div" 
+                    className="font-bold text-gray-900 block"
+                  />
+                  <EditableText 
+                    contentKey="hero_stat1_label" 
+                    defaultValue="Alunos" 
+                    as="div" 
+                    className="text-sm text-gray-600 block"
+                  />
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="bg-pink-100 p-2 rounded-lg">
+                <div className="bg-pink-100 p-2 rounded-lg flex-shrink-0">
                   <Star className="w-5 h-5 text-pink-600" />
                 </div>
                 <div>
-                  <div className="font-bold text-gray-900">5.0</div>
-                  <div className="text-sm text-gray-600">Avaliação</div>
+                  <EditableText 
+                    contentKey="hero_stat2_value" 
+                    defaultValue="5.0" 
+                    as="div" 
+                    className="font-bold text-gray-900 block"
+                  />
+                  <EditableText 
+                    contentKey="hero_stat2_label" 
+                    defaultValue="Avaliação" 
+                    as="div" 
+                    className="text-sm text-gray-600 block"
+                  />
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="bg-purple-100 p-2 rounded-lg">
+                <div className="bg-purple-100 p-2 rounded-lg flex-shrink-0">
                   <TrendingUp className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <div className="font-bold text-gray-900">95%</div>
-                  <div className="text-sm text-gray-600">Aprovação</div>
+                  <EditableText 
+                    contentKey="hero_stat3_value" 
+                    defaultValue="95%" 
+                    as="div" 
+                    className="font-bold text-gray-900 block"
+                  />
+                  <EditableText 
+                    contentKey="hero_stat3_label" 
+                    defaultValue="Aprovação" 
+                    as="div" 
+                    className="text-sm text-gray-600 block"
+                  />
                 </div>
               </div>
             </div>

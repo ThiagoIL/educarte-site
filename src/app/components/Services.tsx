@@ -10,8 +10,13 @@ export function Services({ content = {} }: ServicesProps) {
     <section id="servicos" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm mb-4">
-            Nossos Serviços
+          <div className="inline-block mb-4">
+            <EditableText 
+              contentKey="services_badge" 
+              defaultValue="Nossos Serviços" 
+              as="span" 
+              className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold block"
+            />
           </div>
           <EditableText 
             contentKey="services_title" 
@@ -139,12 +144,18 @@ export function Services({ content = {} }: ServicesProps) {
 
         <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 md:p-12">
           <div className="text-center mb-8">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-              Atendemos do 1° ao 9° ano
-            </h3>
-            <p className="text-gray-600">
-              Programa completo para todas as séries do ensino fundamental
-            </p>
+            <EditableText 
+              contentKey="services_banner_title" 
+              defaultValue="Atendemos do 1° ao 9° ano" 
+              as="h3" 
+              className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 block"
+            />
+            <EditableText 
+              contentKey="services_banner_subtitle" 
+              defaultValue="Programa completo para todas as séries do ensino fundamental" 
+              as="p" 
+              className="text-gray-600 block"
+            />
           </div>
 
           <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -163,30 +174,54 @@ export function Services({ content = {} }: ServicesProps) {
               <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Clock className="w-6 h-6 text-purple-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">Horários Flexíveis</h4>
-              <p className="text-sm text-gray-600">
-                Agendamento que se adapta à sua rotina
-              </p>
+              <EditableText 
+                contentKey="services_features_card1_title" 
+                defaultValue="Horários Flexíveis" 
+                as="h4" 
+                className="font-bold text-gray-900 mb-2 block"
+              />
+              <EditableText 
+                contentKey="services_features_card1_desc" 
+                defaultValue="Agendamento que se adapta à sua rotina" 
+                as="p" 
+                className="text-sm text-gray-600 block"
+              />
             </div>
 
             <div className="bg-white rounded-2xl p-6 text-center">
               <div className="bg-pink-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Users className="w-6 h-6 text-pink-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">Turmas Pequenas</h4>
-              <p className="text-sm text-gray-600">
-                Atenção individualizada para cada aluno
-              </p>
+              <EditableText 
+                contentKey="services_features_card2_title" 
+                defaultValue="Turmas Pequenas" 
+                as="h4" 
+                className="font-bold text-gray-900 mb-2 block"
+              />
+              <EditableText 
+                contentKey="services_features_card2_desc" 
+                defaultValue="Atenção individualizada para cada aluno" 
+                as="p" 
+                className="text-sm text-gray-600 block"
+              />
             </div>
 
             <div className="bg-white rounded-2xl p-6 text-center">
               <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
                 <BookOpen className="w-6 h-6 text-purple-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">Material Incluso</h4>
-              <p className="text-sm text-gray-600">
-                Todo material didático fornecido
-              </p>
+              <EditableText 
+                contentKey="services_features_card3_title" 
+                defaultValue="Material Incluso" 
+                as="h4" 
+                className="font-bold text-gray-900 mb-2 block"
+              />
+              <EditableText 
+                contentKey="services_features_card3_desc" 
+                defaultValue="Todo material didático fornecido" 
+                as="p" 
+                className="text-sm text-gray-600 block"
+              />
             </div>
           </div>
         </div>

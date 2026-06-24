@@ -37,8 +37,13 @@ export function About({ content = {} }: AboutProps) {
     <section id="sobre" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm mb-4">
-            Sobre o EDUCART
+          <div className="inline-block mb-4">
+            <EditableText 
+              contentKey="about_badge" 
+              defaultValue="Sobre o EDUCART" 
+              as="span" 
+              className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold block"
+            />
           </div>
           <EditableText 
             contentKey="about_title" 
@@ -77,10 +82,18 @@ export function About({ content = {} }: AboutProps) {
                     }`}
                   />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <EditableText 
+                  contentKey={`about_feature_title_${index}`} 
+                  defaultValue={feature.title} 
+                  as="h3" 
+                  className="text-xl font-bold text-gray-900 mb-2 block"
+                />
+                <EditableText 
+                  contentKey={`about_feature_desc_${index}`} 
+                  defaultValue={feature.description} 
+                  as="p" 
+                  className="text-gray-600 block text-sm"
+                />
               </div>
             );
           })}
@@ -89,16 +102,46 @@ export function About({ content = {} }: AboutProps) {
         <div className="mt-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl p-8 md:p-12 text-white">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold mb-2">1° - 9°</div>
-              <div className="text-purple-100">Anos de Ensino</div>
+              <EditableText 
+                contentKey="about_stat_years_val" 
+                defaultValue="1° - 9°" 
+                as="div" 
+                className="text-4xl font-bold mb-2 block text-white"
+              />
+              <EditableText 
+                contentKey="about_stat_years_label" 
+                defaultValue="Anos de Ensino" 
+                as="div" 
+                className="text-purple-100 block"
+              />
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2">100%</div>
-              <div className="text-purple-100">Dedicação</div>
+              <EditableText 
+                contentKey="about_stat_dedication_val" 
+                defaultValue="100%" 
+                as="div" 
+                className="text-4xl font-bold mb-2 block text-white"
+              />
+              <EditableText 
+                contentKey="about_stat_dedication_label" 
+                defaultValue="Dedicação" 
+                as="div" 
+                className="text-purple-100 block"
+              />
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2">2</div>
-              <div className="text-purple-100">Professoras Especializadas</div>
+              <EditableText 
+                contentKey="about_stat_teachers_val" 
+                defaultValue="2" 
+                as="div" 
+                className="text-4xl font-bold mb-2 block text-white"
+              />
+              <EditableText 
+                contentKey="about_stat_teachers_label" 
+                defaultValue="Professoras Especializadas" 
+                as="div" 
+                className="text-purple-100 block"
+              />
             </div>
           </div>
         </div>
