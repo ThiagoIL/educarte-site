@@ -91,7 +91,7 @@ INSERT INTO content (content_key, content_value, content_type) VALUES
 ('contact_subtitle', 'Estamos prontos para atender você!', 'text'),
 ('contact_phone', '(11) 99999-9999', 'text'),
 ('contact_email', 'contato@educart.com.br', 'text'),
-('contact_address', 'Rua Exemplo, 123 - São Paulo, SP')
+('contact_address', 'Rua Exemplo, 123 - São Paulo, SP', 'text')
 
 ON DUPLICATE KEY UPDATE 
     content_value = VALUES(content_value),
