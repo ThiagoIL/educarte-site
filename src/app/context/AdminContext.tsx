@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { API_URL, fetchWithAuth, uploadFile } from "../../config/api";
+import { supabase, uploadFileToSupabase } from "../../config/supabase";
 
 interface AdminContextType {
   isAdminMode: boolean;
@@ -84,16 +85,27 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
 
   const uploadImage = async (file: File, key: string): Promise<string | null> => {
     try {
-      const response = await uploadFile(file);
-      if (!response.ok) {
-        throw new Error("Falha no upload");
+      let imageUrl: string;
+
+      if (supabase) {
+        imageUrl = await uploadFileToSupabase(file);
+        toast.success("Imagem enviada para o Supabase Storage com sucesso!");
+      } else {
+        // Fallback robusto se o Supabase não estiver configurado ainda
+        const response = await uploadFile(file);
+        if (!response.ok) {
+          throw new Error("Falha no upload local");
+        }
+        const data = await response.json();
+        imageUrl = data.url;
+        toast.success("Imagem enviada localmente (Supabase não configurado).");
       }
-      const data = await response.json();
-      await updateContent(key, data.url);
-      return data.url;
-    } catch (error) {
+
+      await updateContent(key, imageUrl);
+      return imageUrl;
+    } catch (error: any) {
       console.error("Erro ao enviar imagem:", error);
-      toast.error("Erro ao enviar imagem. Verifique o tamanho e o formato.");
+      toast.error(`Erro ao enviar imagem: ${error.message || "Verifique o tamanho, formato e configuração do Supabase"}`);
       return null;
     }
   };

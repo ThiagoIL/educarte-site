@@ -40,7 +40,23 @@ DB_NAME="educart"
 
 # URL do Frontend
 FRONTEND_URL="http://localhost:3000"
+
+# Configuração do Supabase Storage (Opcional - Ativa upload em nuvem se fornecido)
+NEXT_PUBLIC_SUPABASE_URL="https://seu-projeto-id.supabase.co"
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sua-chave-anonima-publica-supabase"
 ```
+
+### 🪣 Configuração do Supabase Storage
+
+Para armazenar as imagens do site diretamente na nuvem de forma gratuita com o Supabase Storage:
+
+1. Crie uma conta gratuita em [supabase.com](https://supabase.com).
+2. Crie um novo projeto.
+3. No painel lateral, acesse **Storage** e crie um novo bucket chamado `images`.
+4. Defina o bucket como **Public** (Público) nas configurações de privacidade do bucket para que as imagens fiquem visíveis aos visitantes.
+5. Acesse **Project Settings** > **API** e copie os valores de **Project URL** e **anon public key**.
+6. Insira estes valores no seu arquivo `.env` sob as variáveis `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+7. O sistema detectará automaticamente estas variáveis e passará a salvar todos os novos uploads diretamente no seu bucket do Supabase Storage de forma transparente! Caso as variáveis não estejam preenchidas, o sistema continuará salvando os arquivos localmente de forma segura.
 
 ---
 
