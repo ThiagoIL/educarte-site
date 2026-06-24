@@ -18,8 +18,8 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  // Prepend API_URL if the url doesn't start with http
-  const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`;
+  // Prepend API_URL if the url doesn't start with http or API_URL already
+  const fullUrl = (url.startsWith('http') || url.startsWith(API_URL)) ? url : `${API_URL}${url}`;
 
   return fetch(fullUrl, {
     ...options,

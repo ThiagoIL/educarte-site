@@ -439,7 +439,7 @@ async function startServer() {
     console.log('🚀 Servidor EDUCART iniciado!');
     console.log('========================================');
     console.log(`📍 Rodando em: http://localhost:${PORT}`);
-    console.log(`🌐 CORS habilitado para: ${process.env.FRONTEND_URL}`);
+    console.log(`🌐 Frontend e Backend integrados na mesma porta!`);
     console.log(`🗄️  Banco de dados: MySQL (${process.env.DB_NAME})`);
     console.log('========================================');
     console.log('');

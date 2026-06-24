@@ -48,6 +48,9 @@ async function runMigration() {
     const salt = bcrypt.genSaltSync(10);
     const passwordHash = bcrypt.hashSync(adminPassword, salt);
 
+    // Garantir que estamos utilizando o banco de dados correto
+    await connection.query('USE educart;');
+
     // Verificar se já existe
     const [rows] = await connection.query('SELECT id FROM users WHERE email = ?', [adminEmail]);
     if (rows.length === 0) {
