@@ -52,9 +52,9 @@ CREATE TABLE IF NOT EXISTS images (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- Inserir dados iniciais de conteúdo
+-- Inserir dados iniciais de conteúdo (apenas se não existirem)
 -- =====================================================
-INSERT INTO content (content_key, content_value, content_type) VALUES
+INSERT IGNORE INTO content (content_key, content_value, content_type) VALUES
 -- Hero Section
 ('hero_title', 'EDUCART - Reforço Escolar de Qualidade', 'text'),
 ('hero_subtitle', 'Ensino personalizado do 1° ao 9° ano com professoras especializadas em Língua Portuguesa', 'text'),
@@ -62,7 +62,7 @@ INSERT INTO content (content_key, content_value, content_type) VALUES
 
 -- Sobre Section
 ('about_title', 'Sobre o EDUCART', 'text'),
-('about_text', 'O EDUCART é um espaço dedicado ao reforço escolar, onde alunos do 1° ao 9° ano recebem atenção personalizada e acompanhamento de qualidade. Nossa equipe é formada por professoras altamente qualificadas, formadas em Língua Portuguesa, com ampla experiência em educação.', 'text'),
+('about_text', 'O EDUCART é um espaço dedicado ao reforço escolar, onde alunos do 1° ao 9° ano recebem atenção personalizada e acompanhamento de qualidade. Nossa equipe é formada por professoras altamente qualificadas, formadas in Língua Portuguesa, com ampla experiência em educação.', 'text'),
 
 -- Professoras Section
 ('teachers_title', 'Nossas Professoras', 'text'),
@@ -91,11 +91,7 @@ INSERT INTO content (content_key, content_value, content_type) VALUES
 ('contact_subtitle', 'Estamos prontos para atender você!', 'text'),
 ('contact_phone', '(11) 99999-9999', 'text'),
 ('contact_email', 'contato@educart.com.br', 'text'),
-('contact_address', 'Rua Exemplo, 123 - São Paulo, SP', 'text')
-
-ON DUPLICATE KEY UPDATE 
-    content_value = VALUES(content_value),
-    updated_at = CURRENT_TIMESTAMP;
+('contact_address', 'Rua Exemplo, 123 - São Paulo, SP', 'text');
 
 -- =====================================================
 -- Fim do script de criação
