@@ -5,9 +5,9 @@ import { API_URL, fetchWithAuth, uploadFile } from "../../config/api";
 interface AdminContextType {
   isAdminMode: boolean;
   content: Record<string, any>;
-  updateContent: (key: string, value: string) => void;
+  updateContent: (key: string, value: string) => Promise<void>;
   uploadImage: (file: File, key: string) => Promise<string | null>;
-  removeImage: (key: string) => void;
+  removeImage: (key: string) => Promise<void> | void;
   saveChanges: () => Promise<void>;
   saving: boolean;
   loading: boolean;
@@ -59,8 +59,27 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
     }
   };
 
-  const updateContent = (key: string, value: string) => {
+  const updateContent = async (key: string, value: string) => {
+    // Atualiza o estado local imediatamente para uma interface ágil e responsiva
     setContent((prev) => ({ ...prev, [key]: value }));
+
+    try {
+      const response = await fetchWithAuth(`/content/${key}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ value }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao salvar no servidor");
+      }
+      toast.success("Salvo com sucesso!");
+    } catch (error) {
+      console.error(`Erro ao salvar conteúdo para a chave ${key}:`, error);
+      toast.error("Erro ao salvar alteração no banco de dados.");
+    }
   };
 
   const uploadImage = async (file: File, key: string): Promise<string | null> => {
@@ -70,8 +89,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
         throw new Error("Falha no upload");
       }
       const data = await response.json();
-      updateContent(key, data.url);
-      toast.success("Imagem enviada com sucesso!");
+      await updateContent(key, data.url);
       return data.url;
     } catch (error) {
       console.error("Erro ao enviar imagem:", error);
@@ -80,9 +98,8 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
     }
   };
 
-  const removeImage = (key: string) => {
-    updateContent(key, "");
-    toast.success("Imagem removida. Clique em Salvar para persistir.");
+  const removeImage = async (key: string) => {
+    await updateContent(key, "");
   };
 
   const saveChanges = async () => {
