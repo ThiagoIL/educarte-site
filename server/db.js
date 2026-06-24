@@ -119,6 +119,44 @@ const connectWithRetry = async (retries = 2, delay = 1000) => {
     try {
       const connection = await pool.getConnection();
       console.log('✅ Conectado ao MySQL com sucesso!');
+      
+      // Executar migrações automáticas se conectado
+      try {
+        const migrationsPath = path.join(__dirname, '../database/migrations.sql');
+        if (fs.existsSync(migrationsPath)) {
+          console.log('🔄 Executando migrações automáticas no MySQL...');
+          const sqlContent = fs.readFileSync(migrationsPath, 'utf8');
+          await connection.query(sqlContent);
+          console.log('✅ Tabelas criadas/verificadas com sucesso no MySQL!');
+
+          // Semeando o administrador master
+          const adminEmail = process.env.ADMIN_EMAIL || 'admin@educart.com.br';
+          const adminPassword = process.env.ADMIN_PASSWORD || '12345678';
+          const adminName = process.env.ADMIN_NAME || 'Administrador Master';
+
+          const salt = bcrypt.genSaltSync(10);
+          const passwordHash = bcrypt.hashSync(adminPassword, salt);
+
+          await connection.query('USE educart;');
+          const [rows] = await connection.query('SELECT id FROM users WHERE email = ?', [adminEmail]);
+          if (rows.length === 0) {
+            await connection.query(
+              'INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)',
+              [adminName, adminEmail, passwordHash]
+            );
+            console.log(`✅ Usuário administrador master (${adminEmail}) criado com sucesso!`);
+          } else {
+            await connection.query(
+              'UPDATE users SET name = ?, password_hash = ? WHERE email = ?',
+              [adminName, passwordHash, adminEmail]
+            );
+            console.log(`✅ Usuário administrador master (${adminEmail}) atualizado com sucesso!`);
+          }
+        }
+      } catch (migrationErr) {
+        console.error('⚠️ Erro ao executar migrações automáticas no MySQL:', migrationErr.message);
+      }
+
       connection.release();
       return;
     } catch (err) {
@@ -218,11 +256,13 @@ const dbWrapper = {
     try {
       return await pool.query(sql, params);
     } catch (err) {
-      const isConnectionError = ['EAI_AGAIN', 'ECONNREFUSED', 'ETIMEDOUT', 'ENOTFOUND', 'PROTOCOL_CONNECTION_LOST'].includes(err.code) || 
+      const isConnectionError = ['EAI_AGAIN', 'ECONNREFUSED', 'ETIMEDOUT', 'ENOTFOUND', 'PROTOCOL_CONNECTION_LOST', 'ER_NO_SUCH_TABLE', 'ER_BAD_DB_ERROR'].includes(err.code) || 
                                 err.message.includes('getaddrinfo') || 
-                                err.message.includes('connect');
+                                err.message.includes('connect') ||
+                                err.message.includes('table') ||
+                                err.message.includes('database');
       if (isConnectionError) {
-        console.warn(`⚠️ Conexão MySQL perdida (${err.code || err.message}). Mudando para persistência local.`);
+        console.warn(`⚠️ Conexão ou tabela MySQL indisponível (${err.code || err.message}). Mudando para persistência local.`);
         isFallbackMode = true;
         return executeFallbackQuery(sql, params);
       }
@@ -244,11 +284,13 @@ const dbWrapper = {
       const conn = await pool.getConnection();
       return conn;
     } catch (err) {
-      const isConnectionError = ['EAI_AGAIN', 'ECONNREFUSED', 'ETIMEDOUT', 'ENOTFOUND', 'PROTOCOL_CONNECTION_LOST'].includes(err.code) || 
+      const isConnectionError = ['EAI_AGAIN', 'ECONNREFUSED', 'ETIMEDOUT', 'ENOTFOUND', 'PROTOCOL_CONNECTION_LOST', 'ER_NO_SUCH_TABLE', 'ER_BAD_DB_ERROR'].includes(err.code) || 
                                 err.message.includes('getaddrinfo') || 
-                                err.message.includes('connect');
+                                err.message.includes('connect') ||
+                                err.message.includes('table') ||
+                                err.message.includes('database');
       if (isConnectionError) {
-        console.warn(`⚠️ Conexão MySQL perdida ao solicitar conexão. Mudando para persistência local.`);
+        console.warn(`⚠️ Conexão ou tabela MySQL indisponível ao solicitar conexão (${err.code || err.message}). Mudando para persistência local.`);
         isFallbackMode = true;
         return {
           beginTransaction: async () => {},

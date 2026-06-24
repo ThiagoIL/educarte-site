@@ -1,13 +1,17 @@
 import { Star, TrendingUp, Users } from "lucide-react";
 import { EditableText } from "./EditableText";
 import { EditableImage } from "./EditableImage";
+import { useAdmin } from "../context/AdminContext";
 
 interface HeroProps {
   content?: Record<string, any>;
 }
 
 export function Hero({ content = {} }: HeroProps) {
+  const { isAdminMode } = useAdmin();
+
   const scrollToSection = (id: string) => {
+    if (isAdminMode) return;
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
   };
@@ -38,7 +42,8 @@ export function Hero({ content = {} }: HeroProps) {
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => scrollToSection("contato")}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer"
+                disabled={isAdminMode}
+                className={`transition-all ${isAdminMode ? "bg-gray-300 text-gray-500 cursor-not-allowed px-8 py-4 rounded-full" : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-xl transform hover:scale-105 cursor-pointer px-8 py-4 rounded-full"}`}
               >
                 <EditableText 
                   contentKey="hero_cta" 
@@ -49,11 +54,13 @@ export function Hero({ content = {} }: HeroProps) {
               </button>
               <button
                 onClick={() => scrollToSection("sobre")}
-                className="border-2 border-purple-600 text-purple-600 px-8 py-4 rounded-full hover:bg-purple-50 transition-all cursor-pointer"
+                disabled={isAdminMode}
+                className={`transition-all ${isAdminMode ? "border-2 border-gray-300 text-gray-400 cursor-not-allowed px-8 py-4 rounded-full" : "border-2 border-purple-600 text-purple-600 px-8 py-4 rounded-full hover:bg-purple-50 cursor-pointer"}`}
               >
                 Saiba Mais
               </button>
             </div>
+
 
             <div className="flex flex-wrap gap-6 pt-4">
               <div className="flex items-center gap-2">

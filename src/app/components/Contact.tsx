@@ -1,12 +1,14 @@
 import { Mail, Phone, MapPin, Send, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { EditableText } from "./EditableText";
+import { useAdmin } from "../context/AdminContext";
 
 interface ContactProps {
   content?: Record<string, any>;
 }
 
 export function Contact({ content = {} }: ContactProps) {
+  const { isAdminMode } = useAdmin();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,6 +19,7 @@ export function Contact({ content = {} }: ContactProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isAdminMode) return;
     // Aqui você pode adicionar a lógica de envio do formulário
     alert("Mensagem enviada! Entraremos em contato em breve.");
     setFormData({ name: "", email: "", phone: "", grade: "", message: "" });
@@ -146,7 +149,8 @@ export function Contact({ content = {} }: ContactProps) {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  disabled={isAdminMode}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                   placeholder="Seu nome completo"
                 />
               </div>
@@ -162,7 +166,8 @@ export function Contact({ content = {} }: ContactProps) {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  disabled={isAdminMode}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                   placeholder="seu@email.com"
                 />
               </div>
@@ -178,7 +183,8 @@ export function Contact({ content = {} }: ContactProps) {
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  disabled={isAdminMode}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                   placeholder="(11) 98765-4321"
                 />
               </div>
@@ -193,7 +199,8 @@ export function Contact({ content = {} }: ContactProps) {
                   value={formData.grade}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  disabled={isAdminMode}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                 >
                   <option value="">Selecione o ano</option>
                   <option value="1">1° ano</option>
@@ -218,14 +225,16 @@ export function Contact({ content = {} }: ContactProps) {
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  disabled={isAdminMode}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                   placeholder="Conte-nos mais sobre as necessidades do seu filho..."
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-lg hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+                disabled={isAdminMode}
+                className={`w-full px-8 py-4 rounded-lg flex items-center justify-center gap-2 transition-all ${isAdminMode ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg transform hover:scale-105"}`}
               >
                 <Send className="w-5 h-5" />
                 Enviar Mensagem

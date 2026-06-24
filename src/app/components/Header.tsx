@@ -1,10 +1,19 @@
-import { BookOpen, Menu, X } from "lucide-react";
+import { BookOpen, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
+import { useAdmin } from "../context/AdminContext";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAdminMode } = useAdmin();
+
+  const handleLogout = () => {
+    localStorage.removeItem("educart_token");
+    localStorage.removeItem("educart_user");
+    window.location.href = "/";
+  };
 
   const scrollToSection = (id: string) => {
+    if (isAdminMode) return;
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
     setIsMenuOpen(false);
@@ -27,34 +36,50 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-6">
             <button
               onClick={() => scrollToSection("inicio")}
-              className="text-gray-700 hover:text-purple-600 transition-colors"
+              disabled={isAdminMode}
+              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-600 cursor-pointer"}`}
             >
               Início
             </button>
             <button
               onClick={() => scrollToSection("sobre")}
-              className="text-gray-700 hover:text-purple-600 transition-colors"
+              disabled={isAdminMode}
+              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-600 cursor-pointer"}`}
             >
               Sobre
             </button>
             <button
               onClick={() => scrollToSection("profissionais")}
-              className="text-gray-700 hover:text-purple-600 transition-colors"
+              disabled={isAdminMode}
+              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-600 cursor-pointer"}`}
             >
               Profissionais
             </button>
             <button
               onClick={() => scrollToSection("servicos")}
-              className="text-gray-700 hover:text-purple-600 transition-colors"
+              disabled={isAdminMode}
+              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-600 cursor-pointer"}`}
             >
               Serviços
             </button>
             <button
               onClick={() => scrollToSection("contato")}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all"
+              disabled={isAdminMode}
+              className={`transition-all ${isAdminMode ? "bg-gray-300 text-gray-500 cursor-not-allowed px-6 py-2 rounded-full" : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg px-6 py-2 rounded-full cursor-pointer"}`}
             >
               Contato
             </button>
+            
+            {isAdminMode && (
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 px-4 py-2 rounded-full transition-all font-bold cursor-pointer hover:shadow"
+                title="Sair do Modo Admin"
+              >
+                <LogOut className="w-4 h-4" />
+                Sair
+              </button>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -65,7 +90,10 @@ export function Header() {
             {isMenuOpen ? (
               <X className="w-6 h-6 text-gray-700" />
             ) : (
-              <Menu className="w-6 h-6 text-gray-700" />
+              <div className="flex items-center gap-2">
+                {isAdminMode && <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold">Admin</span>}
+                <Menu className="w-6 h-6 text-gray-700" />
+              </div>
             )}
           </button>
         </div>
@@ -75,34 +103,51 @@ export function Header() {
           <nav className="md:hidden py-4 space-y-2 border-t">
             <button
               onClick={() => scrollToSection("inicio")}
-              className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-purple-50 rounded"
+              disabled={isAdminMode}
+              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-purple-50"}`}
             >
               Início
             </button>
             <button
               onClick={() => scrollToSection("sobre")}
-              className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-purple-50 rounded"
+              disabled={isAdminMode}
+              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-purple-50"}`}
             >
               Sobre
             </button>
             <button
               onClick={() => scrollToSection("profissionais")}
-              className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-purple-50 rounded"
+              disabled={isAdminMode}
+              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-purple-50"}`}
             >
               Profissionais
             </button>
             <button
               onClick={() => scrollToSection("servicos")}
-              className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-purple-50 rounded"
+              disabled={isAdminMode}
+              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-purple-50"}`}
             >
               Serviços
             </button>
             <button
               onClick={() => scrollToSection("contato")}
-              className="block w-full text-left px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded"
+              disabled={isAdminMode}
+              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-purple-600 to-pink-600 text-white"}`}
             >
               Contato
             </button>
+
+            {isAdminMode && (
+              <div className="px-4 pt-2">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center justify-center gap-2 w-full text-center px-4 py-2.5 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded-lg transition-colors cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sair do Modo Admin
+                </button>
+              </div>
+            )}
           </nav>
         )}
       </div>
