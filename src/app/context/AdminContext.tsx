@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { API_URL, fetchWithAuth, uploadFile } from "../../config/api";
-import { supabase, uploadFileToSupabase } from "../../config/supabase";
 
 interface AdminContextType {
   isAdminMode: boolean;
@@ -85,44 +84,20 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
 
   const uploadImage = async (file: File, key: string): Promise<string | null> => {
     try {
-      let imageUrl: string;
-
-      if (supabase) {
-        try {
-          imageUrl = await uploadFileToSupabase(file);
-          toast.success("Imagem enviada para o Supabase Storage com sucesso!");
-        } catch (supabaseError: any) {
-          console.warn("Falha no upload para o Supabase, tentando upload local como fallback:", supabaseError);
-          
-          // Fallback para upload local
-          const response = await uploadFile(file);
-          if (!response.ok) {
-            throw new Error(`Falha no upload local após erro no Supabase: ${supabaseError.message || "Bucket não encontrado"}`);
-          }
-          const data = await response.json();
-          imageUrl = data.url;
-          
-          toast.warning(
-            `Aviso: Não foi possível salvar no Supabase (${supabaseError.message || "Bucket não encontrado"}). A imagem foi salva localmente como alternativa. Certifique-se de criar o bucket público chamado 'images' no painel do seu Supabase.`,
-            { duration: 8000 }
-          );
-        }
-      } else {
-        // Fallback robusto se o Supabase não estiver configurado ainda
-        const response = await uploadFile(file);
-        if (!response.ok) {
-          throw new Error("Falha no upload local");
-        }
-        const data = await response.json();
-        imageUrl = data.url;
-        toast.success("Imagem enviada localmente (Supabase não configurado).");
+      const response = await uploadFile(file);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Erro ao processar arquivo no servidor");
       }
-
+      const data = await response.json();
+      const imageUrl = data.url;
+      
       await updateContent(key, imageUrl);
+      toast.success("Imagem enviada com sucesso!");
       return imageUrl;
     } catch (error: any) {
       console.error("Erro ao enviar imagem:", error);
-      toast.error(`Erro ao enviar imagem: ${error.message || "Verifique o tamanho, formato e configuração do Supabase"}`);
+      toast.error(`Erro ao enviar imagem: ${error.message || "Verifique as configurações de upload do servidor"}`);
       return null;
     }
   };

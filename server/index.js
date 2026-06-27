@@ -10,8 +10,23 @@ import fs from 'fs';
 import db from './db.js';
 
 import { createServer as createViteServer } from 'vite';
+import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
+
+// Lazily initialized Supabase client
+let supabaseClient = null;
+function getSupabaseClient() {
+  if (!supabaseClient) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_KEY;
+    if (supabaseUrl && supabaseKey) {
+      supabaseClient = createClient(supabaseUrl.trim(), supabaseKey.trim());
+    }
+  }
+  return supabaseClient;
+}
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,23 +34,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuração do multer para upload de imagens
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
+// Configuração do multer utilizando memória para termos acesso ao Buffer do arquivo
 const upload = multer({ 
-  storage: storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
@@ -374,32 +375,75 @@ app.post('/api/upload', authenticateToken, upload.single('file'), async (req, re
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     }
 
-    console.log('Upload de arquivo:', req.file.filename);
+    // Gerar um nome de arquivo único e imprevisível para evitar colisões
+    const fileExt = path.extname(req.file.originalname) || '.png';
+    const cleanBaseName = path.basename(req.file.originalname, fileExt).replace(/[^\w.-]/g, '_');
+    const randomHash = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const uniqueFileName = `${cleanBaseName}_${Date.now()}_${randomHash}${fileExt}`;
 
-    // Salvar informações do arquivo no banco
+    console.log('Iniciando processamento do upload:', uniqueFileName);
+
+    const supabase = getSupabaseClient();
+    let imageUrl = '';
+
+    if (supabase) {
+      console.log('Enviando buffer para o bucket "imagens-educarte" do Supabase...');
+      // Enviar o buffer diretamente para o Supabase Storage via SDK
+      const { data, error } = await supabase.storage
+        .from('imagens-educarte')
+        .upload(uniqueFileName, req.file.buffer, {
+          contentType: req.file.mimetype,
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) {
+        console.error('Erro de upload no Supabase Storage:', error);
+        throw error;
+      }
+
+      // Obter a URL pública gerada
+      const { data: { publicUrl } } = supabase.storage
+        .from('imagens-educarte')
+        .getPublicUrl(uniqueFileName);
+      
+      imageUrl = publicUrl;
+      console.log('Sucesso! Imagem salva no Supabase Storage:', imageUrl);
+    } else {
+      // Fallback robusto local se as credenciais do Supabase não estiverem configuradas
+      console.log('Supabase não configurado. Salvando em disco local como fallback.');
+      const uploadDir = path.join(__dirname, '../uploads');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      const localFilePath = path.join(uploadDir, uniqueFileName);
+      fs.writeFileSync(localFilePath, req.file.buffer);
+      imageUrl = `/uploads/${uniqueFileName}`;
+      console.log('Fallback local concluído:', imageUrl);
+    }
+
+    // Salvar informações do arquivo no banco (com a URL pública gerada ou local fallback)
     const [result] = await db.query(
       `INSERT INTO images (original_name, saved_name, file_path, file_size, mime_type, uploaded_by) 
        VALUES (?, ?, ?, ?, ?, ?)`,
       [
         req.file.originalname,
-        req.file.filename,
-        req.file.path,
+        uniqueFileName,
+        imageUrl,
         req.file.size,
         req.file.mimetype,
         req.userId
       ]
     );
 
-    const imageUrl = `/uploads/${req.file.filename}`;
-
     res.json({
       success: true,
       url: imageUrl,
-      fileName: req.file.filename,
+      fileName: uniqueFileName,
       imageId: result.insertId
     });
   } catch (error) {
-    console.error('Erro ao fazer upload:', error);
+    console.error('Erro ao processar upload:', error);
     res.status(500).json({ error: 'Erro ao fazer upload da imagem' });
   }
 });

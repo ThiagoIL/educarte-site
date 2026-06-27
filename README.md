@@ -52,7 +52,7 @@ Para armazenar as imagens do site diretamente na nuvem de forma gratuita com o S
 
 1. Crie uma conta gratuita em [supabase.com](https://supabase.com).
 2. Crie um novo projeto.
-3. No painel lateral, acesse **Storage** e crie um novo bucket chamado `images`.
+3. No painel lateral, acesse **Storage** e crie um novo bucket chamado `imagens-educarte`.
 4. Defina o bucket como **Public** (Público) nas configurações de privacidade do bucket para que as imagens fiquem visíveis aos visitantes.
 5. Acesse **Project Settings** > **API** e copie os valores de **Project URL** e **anon public key**.
 6. Insira estes valores no seu arquivo `.env` sob as variáveis `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
