@@ -30,7 +30,8 @@ export const EditableImage: React.FC<EditableImageProps> = ({
     setIsUploading(true);
     setShowOptions(false);
     try {
-      await uploadImage(file, contentKey);
+      const oldUrl = currentSrc !== defaultSrc ? currentSrc : undefined;
+      await uploadImage(file, contentKey, oldUrl);
     } catch (err) {
       console.error(err);
     } finally {

@@ -372,11 +372,73 @@ app.post('/api/content/batch', authenticateToken, async (req, res) => {
 
 // ==================== ROTAS DE UPLOAD ====================
 
+// Helper to extract relative path from Supabase Storage public URL
+function getSupabasePath(url) {
+  if (!url) return null;
+  const marker = '/imagens-educarte/';
+  const index = url.indexOf(marker);
+  if (index !== -1) {
+    return decodeURIComponent(url.substring(index + marker.length));
+  }
+  return null;
+}
+
 // Upload de imagem (requer autenticação)
 app.post('/api/upload', authenticateToken, upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
+    }
+
+    // Ação 1: Deletar a imagem antiga se fornecida
+    const { oldImageUrl } = req.body;
+    if (oldImageUrl) {
+      console.log('Tentando remover imagem anterior para substituição:', oldImageUrl);
+      
+      // Se for upload local
+      if (oldImageUrl.startsWith('/uploads/')) {
+        const filename = path.basename(oldImageUrl);
+        const localFilePath = path.join(__dirname, '../uploads', filename);
+        if (fs.existsSync(localFilePath)) {
+          try {
+            fs.unlinkSync(localFilePath);
+            console.log('Imagem local anterior removida com sucesso:', localFilePath);
+          } catch (fsErr) {
+            console.error('Erro ao remover imagem local anterior:', fsErr);
+          }
+        }
+      } else {
+        // Se for do Supabase
+        const supabase = getSupabaseAdmin();
+        const oldRelativePath = getSupabasePath(oldImageUrl);
+        if (supabase && oldRelativePath) {
+          try {
+            console.log('Removendo do Supabase para substituição:', oldRelativePath);
+            const { error: removeError } = await supabase.storage
+              .from('imagens-educarte')
+              .remove([oldRelativePath]);
+            
+            if (removeError) {
+              console.error('Erro ao remover imagem antiga do Supabase Storage:', removeError);
+            } else {
+              console.log('Imagem anterior removida com sucesso do Supabase Storage.');
+            }
+          } catch (err) {
+            console.error('Erro ao remover imagem antiga do Supabase:', err);
+          }
+        }
+      }
+
+      // Remover o registro de imagem antigo do banco de dados
+      try {
+        const oldRelativePath = getSupabasePath(oldImageUrl);
+        await db.query(
+          'DELETE FROM images WHERE file_path = ? OR saved_name = ?',
+          [oldImageUrl, oldRelativePath || '']
+        );
+      } catch (dbErr) {
+        console.error('Erro ao deletar registro antigo no banco:', dbErr);
+      }
     }
 
     // Gerar um nome de arquivo único e imprevisível para evitar colisões
@@ -449,6 +511,74 @@ app.post('/api/upload', authenticateToken, upload.single('file'), async (req, re
   } catch (error) {
     console.error('Erro ao processar upload:', error);
     res.status(500).json({ error: 'Erro ao fazer upload da imagem' });
+  }
+});
+
+// Ação 2: Remover Imagem Atual (Exclusão Direta)
+app.post('/api/upload/delete', authenticateToken, async (req, res) => {
+  try {
+    const { imageUrl, contentKey } = req.body;
+    if (!imageUrl) {
+      return res.status(400).json({ error: 'A URL da imagem é obrigatória' });
+    }
+
+    console.log(`Removendo imagem atual: ${imageUrl} (Chave: ${contentKey || 'Nenhuma'})`);
+
+    // 1. Remover do local ou do Supabase Storage
+    if (imageUrl.startsWith('/uploads/')) {
+      const filename = path.basename(imageUrl);
+      const localFilePath = path.join(__dirname, '../uploads', filename);
+      if (fs.existsSync(localFilePath)) {
+        try {
+          fs.unlinkSync(localFilePath);
+          console.log('Imagem local removida com sucesso:', localFilePath);
+        } catch (fsErr) {
+          console.error('Erro ao remover imagem local:', fsErr);
+        }
+      }
+    } else {
+      const supabase = getSupabaseAdmin();
+      const relativePath = getSupabasePath(imageUrl);
+      if (supabase && relativePath) {
+        console.log('Removendo do Supabase:', relativePath);
+        const { error: removeError } = await supabase.storage
+          .from('imagens-educarte')
+          .remove([relativePath]);
+        
+        if (removeError) {
+          console.error('Erro ao remover do Supabase Storage:', removeError);
+          return res.status(500).json({ error: `Erro ao remover do Supabase: ${removeError.message}` });
+        }
+        console.log('Imagem removida com sucesso do Supabase Storage.');
+      }
+    }
+
+    // 2. Remover da tabela de registros de imagem
+    const relativePath = getSupabasePath(imageUrl);
+    try {
+      await db.query(
+        'DELETE FROM images WHERE file_path = ? OR saved_name = ?',
+        [imageUrl, relativePath || '']
+      );
+    } catch (dbErr) {
+      console.warn('Erro ao deletar registro do banco:', dbErr);
+    }
+
+    // 3. Atualizar o banco de dados definindo o campo da imagem correspondente na tabela content como ''
+    if (contentKey) {
+      await db.query(
+        `INSERT INTO content (content_key, content_value, content_type) 
+         VALUES (?, '', 'text') 
+         ON DUPLICATE KEY UPDATE content_value = '', updated_at = CURRENT_TIMESTAMP`,
+        [contentKey]
+      );
+      console.log(`Atualizada chave de conteúdo '${contentKey}' para string vazia.`);
+    }
+
+    res.json({ success: true, message: 'Imagem removida com sucesso' });
+  } catch (error) {
+    console.error('Erro ao remover imagem:', error);
+    res.status(500).json({ error: 'Erro ao remover a imagem' });
   }
 });
 

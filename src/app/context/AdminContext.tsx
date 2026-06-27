@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
-import { API_URL, fetchWithAuth, uploadFile } from "../../config/api";
+import { API_URL, fetchWithAuth, uploadFile, deleteFile } from "../../config/api";
 
 interface AdminContextType {
   isAdminMode: boolean;
   content: Record<string, any>;
   updateContent: (key: string, value: string) => Promise<void>;
-  uploadImage: (file: File, key: string) => Promise<string | null>;
-  removeImage: (key: string) => Promise<void> | void;
+  uploadImage: (file: File, key: string, oldImageUrl?: string) => Promise<string | null>;
+  removeImage: (key: string) => Promise<void>;
   saveChanges: () => Promise<void>;
   saving: boolean;
   loading: boolean;
@@ -82,9 +82,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
     }
   };
 
-  const uploadImage = async (file: File, key: string): Promise<string | null> => {
+  const uploadImage = async (file: File, key: string, oldImageUrl?: string): Promise<string | null> => {
     try {
-      const response = await uploadFile(file);
+      const response = await uploadFile(file, oldImageUrl);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || "Erro ao processar arquivo no servidor");
@@ -103,7 +103,21 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
   };
 
   const removeImage = async (key: string) => {
-    await updateContent(key, "");
+    try {
+      const currentUrl = content[key];
+      if (currentUrl) {
+        const response = await deleteFile(currentUrl, key);
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || "Falha ao remover arquivo no servidor");
+        }
+      }
+      await updateContent(key, "");
+      toast.success("Imagem removida com sucesso!");
+    } catch (error: any) {
+      console.error("Erro ao remover imagem:", error);
+      toast.error(`Erro ao remover imagem: ${error.message || "Verifique a exclusão no servidor"}`);
+    }
   };
 
   const saveChanges = async () => {

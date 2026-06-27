@@ -27,12 +27,15 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   });
 };
 
-// Helper para upload de arquivos
-export const uploadFile = async (file: File) => {
+// Helper para upload de arquivos (suporta substituição automática via oldImageUrl)
+export const uploadFile = async (file: File, oldImageUrl?: string) => {
   const token = localStorage.getItem('educart_token');
   
   const formData = new FormData();
   formData.append('file', file);
+  if (oldImageUrl) {
+    formData.append('oldImageUrl', oldImageUrl);
+  }
 
   return fetch(`${API_URL}/upload`, {
     method: 'POST',
@@ -40,5 +43,19 @@ export const uploadFile = async (file: File) => {
       'Authorization': `Bearer ${token}`,
     },
     body: formData,
+  });
+};
+
+// Helper para remoção definitiva de arquivos do bucket e banco
+export const deleteFile = async (imageUrl: string, contentKey?: string) => {
+  const token = localStorage.getItem('educart_token');
+  
+  return fetch(`${API_URL}/upload/delete`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ imageUrl, contentKey }),
   });
 };
