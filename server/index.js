@@ -14,17 +14,21 @@ import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
 
-// Lazily initialized Supabase client
-let supabaseClient = null;
-function getSupabaseClient() {
-  if (!supabaseClient) {
+// Lazily initialized Supabase Admin client (using service role key for backend operations)
+let supabaseAdmin = null;
+function getSupabaseAdmin() {
+  if (!supabaseAdmin) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_KEY;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_KEY;
     if (supabaseUrl && supabaseKey) {
-      supabaseClient = createClient(supabaseUrl.trim(), supabaseKey.trim());
+      const isServiceRole = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+      console.log(`Inicializando cliente Supabase no backend usando: ${isServiceRole ? 'SUPABASE_SERVICE_ROLE_KEY (Modo Admin)' : 'Chave Pública/Fallback'}`);
+      supabaseAdmin = createClient(supabaseUrl.trim(), supabaseKey.trim());
+    } else {
+      console.warn('Credenciais do Supabase não encontradas no ambiente do backend.');
     }
   }
-  return supabaseClient;
+  return supabaseAdmin;
 }
 
 
@@ -383,7 +387,7 @@ app.post('/api/upload', authenticateToken, upload.single('file'), async (req, re
 
     console.log('Iniciando processamento do upload:', uniqueFileName);
 
-    const supabase = getSupabaseClient();
+    const supabase = getSupabaseAdmin();
     let imageUrl = '';
 
     if (supabase) {
