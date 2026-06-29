@@ -15,36 +15,65 @@ Este é o repositório da **Landing Page do EDUCART (Espaço Educativo)**. A apl
 
 ---
 
-## ⚙️ Variáveis de Ambiente (.env)
+## ⚙️ Variáveis de Ambiente (.env) e Configurações de Deploy (Easypanel / Coolify)
 
-Copie o arquivo `.env.example` para `.env` e configure as chaves:
+Para garantir que o sistema rode de forma robusta e persistente, configure as seguintes variáveis no seu painel (ex: Easypanel, Coolify, ou arquivo `.env` local).
+
+### 🔴 1. Variáveis ESSENCIAIS (Obrigatórias)
+Sem estas variáveis configuradas, o sistema não funcionará corretamente ou apresentará erros de acesso e segurança:
+
+* **`PORT`**: Porta do servidor da aplicação (padrão: `3000`. No Easypanel, geralmente fornecido pelo sistema ou configurado como `3002`/`3000`).
+* **`JWT_SECRET`**: Chave secreta de segurança para criptografia dos tokens de sessão administrativa. Escolha uma string longa e complexa em produção.
+* **`ADMIN_NAME`**: Nome de exibição do Administrador Master.
+* **`ADMIN_EMAIL`**: E-mail usado para acessar o painel de administração (`/admin/login`).
+* **`ADMIN_PASSWORD`**: Senha forte para o login do administrador master.
+* **`NODE_ENV`**: Define o ambiente de execução (use `production` em produção e `development` em desenvolvimento).
+
+---
+
+### 🟡 2. Variáveis do Banco de Dados MySQL (Recomendado para Produção)
+Se não configurado ou se a conexão falhar, o sistema ativa automaticamente o modo de **Auto-Fallback** usando o arquivo JSON local `database/fallback_data.json`. No entanto, para persistência definitiva em produção multi-instância, o MySQL é fortemente recomendado:
+
+* **`DB_HOST`**: Endereço do servidor MySQL (no Easypanel, utilize o nome do serviço de banco de dados, ex: `5_db_educart` ou `db`).
+* **`DB_PORT`**: Porta de conexão do banco (geralmente `3306`).
+* **`DB_USER`**: Usuário do banco (geralmente `root`).
+* **`DB_PASSWORD`**: Senha do banco de dados MySQL.
+* **`DB_NAME`**: Nome do banco de dados (padrão: `educart`).
+
+---
+
+### 🟢 3. Variáveis do Supabase Storage (Altamente Recomendado para Imagens em Nuvem)
+Como contêineres Docker (no Easypanel/Coolify) têm sistemas de arquivos **efêmeros** (tudo que é salvo localmente é apagado no próximo deploy ou reinicialização), você **deve** configurar o Supabase para armazenar os uploads de imagens. Caso contrário, as imagens serão salvas na pasta local `/uploads` e serão perdidas ao recriar o contêiner.
+
+* **`NEXT_PUBLIC_SUPABASE_URL`**: URL do seu projeto Supabase (ex: `https://xxxx.supabase.co`).
+* **`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`**: Chave pública `anon` do Supabase.
+* **`SUPABASE_SERVICE_ROLE_KEY`**: Chave privada `service_role` (usada pelo backend para fazer bypass de RLS com segurança e enviar as fotos).
+
+---
+
+### 📝 Exemplo Completo de Configuração (.env)
 
 ```env
-# Port do Servidor
+# Essenciais
 PORT=3000
-
-# Chave para criptografia JWT
-JWT_SECRET="sua_chave_secreta_jwt"
-
-# Configuração do Administrador Master (Auto-gerado nas migrações/fallback!)
+JWT_SECRET="YmxhIDU2IDg5MDEyQCBkaHNkIHNzZGZ3ZSBmcjZzZGY2c2RmICA1NXNkZjY1c2FkIDcgOCA5OCAwIDkwOTkgIA=="
 ADMIN_NAME="Administrador Master"
 ADMIN_EMAIL="admin@educart.com.br"
-ADMIN_PASSWORD="sua_senha_de_admin"
+ADMIN_PASSWORD="sua_senha_secreta_aqui"
+NODE_ENV="production"
+FRONTEND_URL="http://localhost:3000"
 
-# Banco de Dados MySQL (Opcional - Ativa o Fallback se não for fornecido ou falhar)
-DB_HOST="localhost"
+# Banco de Dados MySQL (Opcional, ativa Fallback se omitido)
+DB_HOST="db_educart"
 DB_PORT="3306"
 DB_USER="root"
 DB_PASSWORD="sua_senha_do_banco"
 DB_NAME="educart"
 
-# URL do Frontend
-FRONTEND_URL="http://localhost:3000"
-
-# Configuração do Supabase Storage (Opcional - Ativa upload em nuvem se fornecido)
-NEXT_PUBLIC_SUPABASE_URL="https://seu-projeto-id.supabase.co"
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sua-chave-anonima-publica-supabase"
-SUPABASE_SERVICE_ROLE_KEY="sua-chave-service-role-privada-supabase"
+# Supabase Storage (Obrigatório para persistência permanente de imagens no Easypanel)
+NEXT_PUBLIC_SUPABASE_URL="https://sua-url-supabase.supabase.co"
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sua-chave-publica-anon"
+SUPABASE_SERVICE_ROLE_KEY="sua-chave-privada-service-role"
 ```
 
 ### 🪣 Configuração do Supabase Storage
