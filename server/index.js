@@ -319,6 +319,12 @@ app.put('/api/admin/users/:id', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Nome e e-mail são obrigatórios' });
     }
 
+    // Verificar se o e-mail já está em uso por outro administrador
+    const [existingUsers] = await db.query('SELECT id FROM users WHERE email = ? AND id != ?', [email, id]);
+    if (existingUsers.length > 0) {
+      return res.status(400).json({ error: 'Este e-mail já está sendo utilizado por outro administrador' });
+    }
+
     if (password) {
       if (password.length < 6) {
         return res.status(400).json({ error: 'A nova senha deve ter no mínimo 6 caracteres' });

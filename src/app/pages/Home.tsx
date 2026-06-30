@@ -11,8 +11,7 @@ import { Save, LogOut, CheckCircle, Settings, MessageCircle } from "lucide-react
 import AdminSettingsModal from "../components/AdminSettingsModal";
 
 function HomeContent() {
-  const { content, isAdminMode, saveChanges, saving, loading } = useAdmin();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { content, isAdminMode, loading } = useAdmin();
 
   // Dynamically update favicon when favicon_url changes
   useEffect(() => {
@@ -36,56 +35,10 @@ function HomeContent() {
     );
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem("educart_token");
-    localStorage.removeItem("educart_user");
-    window.location.href = "/";
-  };
-
   return (
     <div className="min-h-screen bg-white relative">
-      {/* Floating admin banner if loggined */}
-      {isAdminMode && (
-        <div className="sticky top-0 left-0 right-0 bg-gradient-to-r from-purple-800 to-pink-800 text-white py-3 px-4 shadow-xl z-50 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-            <span className="font-semibold text-sm sm:text-base">
-              Modo de Edição Visual Ativo
-            </span>
-            <span className="text-purple-200 text-xs hidden sm:inline">
-              | Clique no lápis nos textos ou clique nas imagens para alterar
-            </span>
-          </div>
-
-          <div className="flex gap-2 items-center">
-            <button
-              onClick={() => setIsSettingsOpen(true)}
-              className="flex items-center gap-1.5 py-1.5 px-3 bg-purple-600 hover:bg-purple-700 border border-purple-500 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all scale-100 hover:scale-[1.02] cursor-pointer"
-            >
-              <Settings className="w-4 h-4" />
-              Configurações
-            </button>
-            <button
-              onClick={saveChanges}
-              disabled={saving}
-              className="flex items-center gap-1.5 py-1.5 px-4 bg-green-500 hover:bg-green-600 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all scale-100 hover:scale-[1.02] cursor-pointer"
-            >
-              <Save className="w-4 h-4" />
-              {saving ? "Salvando..." : "Salvar Alterações"}
-            </button>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 py-1.5 px-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-sm font-medium transition-colors cursor-pointer"
-            >
-              <LogOut className="w-4 h-4" />
-              Sair
-            </button>
-          </div>
-        </div>
-      )}
-
       <Header />
-      <main>
+      <main className={isAdminMode ? "pt-[130px] md:pt-[56px]" : ""}>
         <Hero content={content} />
         <About content={content} />
         <Teachers content={content} />
@@ -116,14 +69,6 @@ function HomeContent() {
           </a>
         );
       })()}
-
-      {/* Admin Settings Modal */}
-      {isAdminMode && (
-        <AdminSettingsModal 
-          isOpen={isSettingsOpen} 
-          onClose={() => setIsSettingsOpen(false)} 
-        />
-      )}
     </div>
   );
 }

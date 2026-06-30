@@ -28,6 +28,7 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -77,6 +78,17 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
       return;
     }
 
+    if (formData.password) {
+      if (formData.password.length < 6) {
+        toast.error("A senha deve ter no mínimo 6 caracteres.");
+        return;
+      }
+      if (formData.password !== formData.confirmPassword) {
+        toast.error("As senhas digitadas não coincidem.");
+        return;
+      }
+    }
+
     setActionLoading(true);
     try {
       let response;
@@ -92,12 +104,27 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
       } else {
         response = await fetchWithAuth("/admin/users", {
           method: "POST",
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          }),
         });
       }
 
       if (response.ok) {
         toast.success(isEditing ? "Administrador atualizado!" : "Administrador criado!");
+        
+        // Se atualizou os próprios dados, atualiza a sessão local e recarrega
+        if (isEditing && editingId === currentUser.id) {
+          const updatedUser = { ...currentUser, name: formData.name, email: formData.email };
+          localStorage.setItem("educart_user", JSON.stringify(updatedUser));
+          toast.success("Seus dados foram atualizados. Recarregando a página para aplicar...");
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        }
+
         resetForm();
         loadUsers();
       } else {
@@ -118,13 +145,19 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
     setFormData({
       name: user.name,
       email: user.email,
-      password: "", // Leave blank unless they want to change password
+      password: "",
+      confirmPassword: "",
     });
   };
 
   const handleDeleteClick = async (id: number) => {
     if (id === currentUser.id) {
       toast.error("Você não pode excluir sua própria conta enquanto estiver logado.");
+      return;
+    }
+
+    if (users.length <= 1) {
+      toast.error("Não é possível excluir o único administrador do sistema.");
       return;
     }
 
@@ -160,6 +193,7 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     });
   };
 
@@ -271,7 +305,7 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
                   {isEditing ? `Editar Administrador: ${formData.name}` : "Adicionar Novo Administrador"}
                 </h3>
                 
-                <form onSubmit={handleUserSubmit} className="grid sm:grid-cols-3 gap-4 items-end">
+                <form onSubmit={handleUserSubmit} className="grid sm:grid-cols-2 gap-4 items-end">
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-gray-600 uppercase">Nome</label>
                     <div className="relative">
@@ -319,7 +353,24 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
                     </div>
                   </div>
 
-                  <div className="sm:col-span-3 flex justify-end gap-2 pt-2 border-t border-purple-100/50 mt-2">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-600 uppercase">
+                      Confirmar Senha
+                    </label>
+                    <div className="relative">
+                      <Key className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                      <input
+                        type="password"
+                        required={!isEditing ? !!formData.password : false}
+                        value={formData.confirmPassword}
+                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                        placeholder={isEditing ? "Confirme a nova senha" : "Repita a senha"}
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="sm:col-span-2 flex justify-end gap-2 pt-2 border-t border-purple-100/50 mt-2">
                     {isEditing && (
                       <button
                         type="button"
