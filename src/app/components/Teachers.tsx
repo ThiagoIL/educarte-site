@@ -8,7 +8,7 @@ interface TeachersProps {
 
 export function Teachers({ content = {} }: TeachersProps) {
   return (
-    <section id="profissionais" className="py-20 bg-gradient-to-br from-purple-50 via-white to-pink-50">
+    <section id="profissionais" className="py-20 bg-gradient-to-br from-amber-50/40 via-white to-purple-50/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <div className="inline-block mb-4">
@@ -16,26 +16,26 @@ export function Teachers({ content = {} }: TeachersProps) {
               contentKey="teachers_badge" 
               defaultValue="Nossas Profissionais" 
               as="span" 
-              className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold block"
+              className="bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-semibold block shadow-sm border border-emerald-200"
             />
           </div>
           <EditableText 
             contentKey="teachers_title" 
             defaultValue="Nossas Profissionais" 
             as="h2" 
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 block"
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 block font-display"
           />
           <EditableText 
             contentKey="teachers_subtitle" 
             defaultValue="Equipe especializada e comprometida com a excelência" 
             as="p" 
-            className="text-lg text-gray-600 max-w-2xl mx-auto block"
+            className="text-lg text-gray-600 max-w-2xl mx-auto block font-medium"
           />
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
           {/* Professora 1 */}
-          <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2">
+          <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
             <div className="relative h-80">
               <EditableImage
                 contentKey="teacher1_image"
@@ -54,7 +54,7 @@ export function Teachers({ content = {} }: TeachersProps) {
                   contentKey="teacher1_title" 
                   defaultValue="Especialista em Língua Portuguesa" 
                   as="p" 
-                  className="text-purple-200 block text-sm"
+                  className="text-emerald-200 block text-sm font-semibold"
                 />
               </div>
             </div>
@@ -64,29 +64,29 @@ export function Teachers({ content = {} }: TeachersProps) {
                 contentKey="teacher1_bio" 
                 defaultValue="Formada em Letras - Língua Portuguesa, com mais de 10 anos de experiência em educação e reforço escolar." 
                 as="p" 
-                className="text-gray-600 block"
+                className="text-gray-600 block font-medium"
               />
 
               <div className="flex items-center gap-2 text-gray-600">
-                <GraduationCap className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                <GraduationCap className="w-5 h-5 text-purple-500 flex-shrink-0" />
                 <EditableText 
                   contentKey="teacher1_exp" 
                   defaultValue="10 anos de experiência" 
                   as="span" 
-                  className="font-medium text-gray-600 block"
+                  className="font-semibold text-gray-700 block"
                 />
               </div>
 
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <Award className="w-5 h-5 text-pink-600 flex-shrink-0" />
+                  <Award className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                   <span className="font-bold text-gray-900">Especialidades:</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {["Gramática", "Redação", "Literatura"].map((specialty, idx) => (
                     <span
                       key={idx}
-                      className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 px-3 py-1 rounded-full text-sm"
+                      className="bg-purple-50 border border-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-semibold shadow-sm"
                     >
                       {specialty}
                     </span>
@@ -95,19 +95,19 @@ export function Teachers({ content = {} }: TeachersProps) {
               </div>
 
               <div className="flex items-center gap-2 text-gray-600 pt-2 border-t">
-                <Heart className="w-5 h-5 text-pink-600 flex-shrink-0" />
+                <Heart className="w-5 h-5 text-rose-500 flex-shrink-0" />
                 <EditableText 
                   contentKey="teacher1_quote" 
                   defaultValue="Dedicada a fazer a diferença na vida dos alunos" 
                   as="span" 
-                  className="text-sm italic text-gray-600 block"
+                  className="text-sm italic text-gray-600 block font-medium"
                 />
               </div>
             </div>
           </div>
 
           {/* Professora 2 */}
-          <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2">
+          <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
             <div className="relative h-80">
               <EditableImage
                 contentKey="teacher2_image"
@@ -126,7 +126,7 @@ export function Teachers({ content = {} }: TeachersProps) {
                   contentKey="teacher2_title" 
                   defaultValue="Especialista em Língua Portuguesa" 
                   as="p" 
-                  className="text-purple-200 block text-sm"
+                  className="text-emerald-200 block text-sm font-semibold"
                 />
               </div>
             </div>
@@ -136,29 +136,29 @@ export function Teachers({ content = {} }: TeachersProps) {
                 contentKey="teacher2_bio" 
                 defaultValue="Graduada em Letras - Língua Portuguesa, apaixonada por ensinar e desenvolver o potencial de cada aluno." 
                 as="p" 
-                className="text-gray-600 block"
+                className="text-gray-600 block font-medium"
               />
 
               <div className="flex items-center gap-2 text-gray-600">
-                <GraduationCap className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                <GraduationCap className="w-5 h-5 text-sky-500 flex-shrink-0" />
                 <EditableText 
                   contentKey="teacher2_exp" 
                   defaultValue="8 anos de experiência" 
                   as="span" 
-                  className="font-medium text-gray-600 block"
+                  className="font-semibold text-gray-700 block"
                 />
               </div>
 
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <Award className="w-5 h-5 text-pink-600 flex-shrink-0" />
+                  <Award className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                   <span className="font-bold text-gray-900">Especialidades:</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {["Interpretação de Texto", "Ortografia", "Produção Textual"].map((specialty, idx) => (
                     <span
                       key={idx}
-                      className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 px-3 py-1 rounded-full text-sm"
+                      className="bg-sky-50 border border-sky-100 text-sky-800 px-3 py-1 rounded-full text-sm font-semibold shadow-sm"
                     >
                       {specialty}
                     </span>
@@ -167,12 +167,12 @@ export function Teachers({ content = {} }: TeachersProps) {
               </div>
 
               <div className="flex items-center gap-2 text-gray-600 pt-2 border-t">
-                <Heart className="w-5 h-5 text-pink-600 flex-shrink-0" />
+                <Heart className="w-5 h-5 text-rose-500 flex-shrink-0" />
                 <EditableText 
                   contentKey="teacher2_quote" 
                   defaultValue="Dedicada a fazer a diferença na vida dos alunos" 
                   as="span" 
-                  className="text-sm italic text-gray-600 block"
+                  className="text-sm italic text-gray-600 block font-medium"
                 />
               </div>
             </div>
@@ -180,18 +180,18 @@ export function Teachers({ content = {} }: TeachersProps) {
         </div>
 
         <div className="mt-12 text-center">
-          <div className="inline-block bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-8 md:p-12 text-white max-w-2xl w-full">
+          <div className="inline-block bg-gradient-to-r from-purple-500 via-rose-500 to-orange-500 rounded-3xl p-8 md:p-12 text-white max-w-2xl w-full shadow-xl shadow-rose-500/10">
             <EditableText 
               contentKey="teachers_why_title" 
               defaultValue="Por que escolher o EDUCART?" 
               as="h3" 
-              className="text-2xl font-bold mb-3 block text-white"
+              className="text-2xl font-bold mb-3 block text-white font-display"
             />
             <EditableText 
               contentKey="teachers_why_description" 
               defaultValue="Nossas professoras possuem formação acadêmica sólida, experiência prática em sala de aula e, acima de tudo, paixão por ensinar. Cada aula é planejada com carinho para garantir o melhor aprendizado." 
               as="p" 
-              className="text-purple-100 font-medium block"
+              className="text-rose-50 font-semibold block"
             />
           </div>
         </div>

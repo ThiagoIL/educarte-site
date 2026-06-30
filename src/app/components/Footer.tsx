@@ -4,7 +4,7 @@ import { EditableText } from "./EditableText";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  const { isAdminMode } = useAdmin();
+  const { content, isAdminMode } = useAdmin();
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (isAdminMode) {
@@ -18,27 +18,43 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-2 rounded-lg">
-                <BookOpen className="w-6 h-6 text-white" />
-              </div>
-              <EditableText
-                contentKey="footer_brand_name"
-                defaultValue="EDUCART"
-                as="span"
-                className="text-2xl font-bold block text-white"
-              />
+              {content?.logo_url ? (
+                <img src={content.logo_url} alt="Logo" className="w-10 h-10 object-contain rounded" />
+              ) : (
+                <div className="bg-[#1559C3] p-2 rounded-lg">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+              )}
+              {isAdminMode ? (
+                <EditableText
+                  contentKey="footer_brand_name"
+                  defaultValue="EDUCART"
+                  as="span"
+                  className="text-2xl font-bold block text-white font-display"
+                />
+              ) : (
+                <span className="text-2xl font-black block font-display tracking-wider flex select-none">
+                  <span className="text-[#F14B29]">E</span>
+                  <span className="text-[#1559C3]">D</span>
+                  <span className="text-[#E61F93]">U</span>
+                  <span className="text-[#00B96B]">C</span>
+                  <span className="text-[#C81EA5]">A</span>
+                  <span className="text-[#0F0CBE]">R</span>
+                  <span className="text-[#F14B29]">T</span>
+                </span>
+              )}
             </div>
             <EditableText
               contentKey="footer_description"
               defaultValue="Reforço escolar de qualidade do 1° ao 9° ano. Educação que transforma vidas."
               as="p"
-              className="text-gray-400 mb-4 block text-sm"
+              className="text-gray-400 mb-4 block text-sm font-medium"
             />
             <div className="flex gap-4">
               <a
                 href="#"
                 onClick={handleLinkClick}
-                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-purple-600"}`}
+                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-rose-500"}`}
                 aria-label="Instagram"
               >
                 <Instagram className="w-5 h-5" />
@@ -46,7 +62,7 @@ export function Footer() {
               <a
                 href="#"
                 onClick={handleLinkClick}
-                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-purple-600"}`}
+                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-rose-500"}`}
                 aria-label="Facebook"
               >
                 <Facebook className="w-5 h-5" />
@@ -54,7 +70,7 @@ export function Footer() {
               <a
                 href="#"
                 onClick={handleLinkClick}
-                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-purple-600"}`}
+                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-rose-500"}`}
                 aria-label="E-mail"
               >
                 <Mail className="w-5 h-5" />
@@ -69,7 +85,7 @@ export function Footer() {
                 <a 
                   href="#inicio" 
                   onClick={handleLinkClick}
-                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-400"}`}
+                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-orange-400 font-medium"}`}
                 >
                   Início
                 </a>
@@ -78,7 +94,7 @@ export function Footer() {
                 <a 
                   href="#sobre" 
                   onClick={handleLinkClick}
-                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-400"}`}
+                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-orange-400 font-medium"}`}
                 >
                   Sobre
                 </a>
@@ -87,7 +103,7 @@ export function Footer() {
                 <a 
                   href="#profissionais" 
                   onClick={handleLinkClick}
-                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-400"}`}
+                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-orange-400 font-medium"}`}
                 >
                   Profissionais
                 </a>
@@ -96,7 +112,7 @@ export function Footer() {
                 <a 
                   href="#servicos" 
                   onClick={handleLinkClick}
-                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-400"}`}
+                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-orange-400 font-medium"}`}
                 >
                   Serviços
                 </a>
@@ -105,7 +121,7 @@ export function Footer() {
                 <a 
                   href="#contato" 
                   onClick={handleLinkClick}
-                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-400"}`}
+                  className={`transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-orange-400 font-medium"}`}
                 >
                   Contato
                 </a>
@@ -116,10 +132,30 @@ export function Footer() {
           <div>
             <h3 className="font-bold mb-4">Contato</h3>
             <ul className="space-y-2 text-gray-400">
-              <li>(11) 98765-4321</li>
-              <li>contato@educart.com.br</li>
-              <li>Rua das Flores, 123</li>
-              <li>Centro - São Paulo/SP</li>
+              <li>
+                <EditableText
+                  contentKey="contact_phone"
+                  defaultValue="(11) 98765-4321"
+                  as="span"
+                  className="text-gray-400 font-inherit block"
+                />
+              </li>
+              <li>
+                <EditableText
+                  contentKey="contact_email"
+                  defaultValue="contato@educart.com.br"
+                  as="span"
+                  className="text-gray-400 font-inherit block"
+                />
+              </li>
+              <li>
+                <EditableText
+                  contentKey="contact_address"
+                  defaultValue="Rua das Flores, 123 - São Paulo, SP"
+                  as="span"
+                  className="text-gray-400 font-inherit block"
+                />
+              </li>
             </ul>
           </div>
         </div>

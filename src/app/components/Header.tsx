@@ -5,7 +5,7 @@ import { EditableText } from "./EditableText";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAdminMode } = useAdmin();
+  const { content, isAdminMode } = useAdmin();
 
   const handleLogout = () => {
     localStorage.removeItem("educart_token");
@@ -25,51 +25,67 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
-            <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-2 rounded-lg">
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
-            <EditableText
-              contentKey="brand_name"
-              defaultValue="EDUCART"
-              as="span"
-              className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent block"
-            />
+            {content?.logo_url ? (
+              <img src={content.logo_url} alt="Logo" className="w-10 h-10 object-contain rounded" />
+            ) : (
+              <div className="bg-[#1559C3] p-2 rounded-lg">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+            )}
+            {isAdminMode ? (
+              <EditableText
+                contentKey="brand_name"
+                defaultValue="EDUCART"
+                as="span"
+                className="text-2xl font-black text-gray-800 block font-display tracking-wider"
+              />
+            ) : (
+              <span className="text-2xl font-black block font-display tracking-wider flex select-none">
+                <span className="text-[#F14B29]">E</span>
+                <span className="text-[#1559C3]">D</span>
+                <span className="text-[#E61F93]">U</span>
+                <span className="text-[#00B96B]">C</span>
+                <span className="text-[#C81EA5]">A</span>
+                <span className="text-[#0F0CBE]">R</span>
+                <span className="text-[#F14B29]">T</span>
+              </span>
+            )}
           </div>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-6 font-semibold">
             <button
               onClick={() => scrollToSection("inicio")}
               disabled={isAdminMode}
-              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-600 cursor-pointer"}`}
+              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-rose-500 cursor-pointer"}`}
             >
               Início
             </button>
             <button
               onClick={() => scrollToSection("sobre")}
               disabled={isAdminMode}
-              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-600 cursor-pointer"}`}
+              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-rose-500 cursor-pointer"}`}
             >
               Sobre
             </button>
             <button
               onClick={() => scrollToSection("profissionais")}
               disabled={isAdminMode}
-              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-600 cursor-pointer"}`}
+              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-rose-500 cursor-pointer"}`}
             >
               Profissionais
             </button>
             <button
               onClick={() => scrollToSection("servicos")}
               disabled={isAdminMode}
-              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-purple-600 cursor-pointer"}`}
+              className={`text-gray-700 transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:text-rose-500 cursor-pointer"}`}
             >
               Serviços
             </button>
             <button
               onClick={() => scrollToSection("contato")}
               disabled={isAdminMode}
-              className={`transition-all ${isAdminMode ? "bg-gray-300 text-gray-500 cursor-not-allowed px-6 py-2 rounded-full" : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg px-6 py-2 rounded-full cursor-pointer"}`}
+              className={`transition-all ${isAdminMode ? "bg-gray-300 text-gray-500 cursor-not-allowed px-6 py-2 rounded-full font-bold" : "bg-[#1559C3] hover:bg-[#1149a1] text-white hover:shadow-lg hover:shadow-blue-500/10 px-6 py-2 rounded-full cursor-pointer font-bold"}`}
             >
               Contato
             </button>
@@ -103,40 +119,40 @@ export function Header() {
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
+         {isMenuOpen && (
           <nav className="md:hidden py-4 space-y-2 border-t">
             <button
               onClick={() => scrollToSection("inicio")}
               disabled={isAdminMode}
-              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-purple-50"}`}
+              className={`block w-full text-left px-4 py-2 rounded font-semibold ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-rose-50"}`}
             >
               Início
             </button>
             <button
               onClick={() => scrollToSection("sobre")}
               disabled={isAdminMode}
-              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-purple-50"}`}
+              className={`block w-full text-left px-4 py-2 rounded font-semibold ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-rose-50"}`}
             >
               Sobre
             </button>
             <button
               onClick={() => scrollToSection("profissionais")}
               disabled={isAdminMode}
-              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-purple-50"}`}
+              className={`block w-full text-left px-4 py-2 rounded font-semibold ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-rose-50"}`}
             >
               Profissionais
             </button>
             <button
               onClick={() => scrollToSection("servicos")}
               disabled={isAdminMode}
-              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-purple-50"}`}
+              className={`block w-full text-left px-4 py-2 rounded font-semibold ${isAdminMode ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-rose-50"}`}
             >
               Serviços
             </button>
             <button
               onClick={() => scrollToSection("contato")}
               disabled={isAdminMode}
-              className={`block w-full text-left px-4 py-2 rounded ${isAdminMode ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-purple-600 to-pink-600 text-white"}`}
+              className={`block w-full text-left px-4 py-2 rounded font-bold ${isAdminMode ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-[#1559C3] text-white active:bg-[#1149a1]"}`}
             >
               Contato
             </button>

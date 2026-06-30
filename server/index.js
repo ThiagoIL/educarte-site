@@ -270,6 +270,96 @@ app.get('/api/admin/verify', authenticateToken, async (req, res) => {
   }
 });
 
+// Listar administradores (apenas admins logados)
+app.get('/api/admin/users', authenticateToken, async (req, res) => {
+  try {
+    const [users] = await db.query('SELECT id, name, email FROM users');
+    res.json({ success: true, users });
+  } catch (error) {
+    console.error('Erro ao listar administradores:', error);
+    res.status(500).json({ error: 'Erro ao listar administradores' });
+  }
+});
+
+// Criar administrador (apenas admins logados)
+app.post('/api/admin/users', authenticateToken, async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'A senha deve ter no mínimo 6 caracteres' });
+    }
+
+    const [existingUsers] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
+    if (existingUsers.length > 0) {
+      return res.status(400).json({ error: 'Este e-mail já está cadastrado' });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    await db.query('INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)', [name, email, passwordHash]);
+
+    res.json({ success: true, message: 'Administrador criado com sucesso' });
+  } catch (error) {
+    console.error('Erro ao criar administrador:', error);
+    res.status(500).json({ error: 'Erro ao criar administrador: ' + error.message });
+  }
+});
+
+// Atualizar administrador (apenas admins logados)
+app.put('/api/admin/users/:id', authenticateToken, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { name, email, password } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Nome e e-mail são obrigatórios' });
+    }
+
+    if (password) {
+      if (password.length < 6) {
+        return res.status(400).json({ error: 'A nova senha deve ter no mínimo 6 caracteres' });
+      }
+      const passwordHash = await bcrypt.hash(password, 10);
+      await db.query('UPDATE users SET name = ?, email = ?, password_hash = ? WHERE id = ?', [name, email, passwordHash, id]);
+    } else {
+      await db.query('UPDATE users SET name = ?, email = ? WHERE id = ?', [name, email, id]);
+    }
+
+    res.json({ success: true, message: 'Administrador atualizado com sucesso' });
+  } catch (error) {
+    console.error('Erro ao atualizar administrador:', error);
+    res.status(500).json({ error: 'Erro ao atualizar administrador: ' + error.message });
+  }
+});
+
+// Excluir administrador (apenas admins logados)
+app.delete('/api/admin/users/:id', authenticateToken, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    // Impedir de se excluir
+    if (id === req.userId) {
+      return res.status(400).json({ error: 'Você não pode excluir sua própria conta enquanto estiver logado.' });
+    }
+
+    // Verificar se há mais de um admin antes de excluir
+    const [users] = await db.query('SELECT id FROM users');
+    if (users.length <= 1) {
+      return res.status(400).json({ error: 'Não é possível excluir o único administrador do sistema.' });
+    }
+
+    await db.query('DELETE FROM users WHERE id = ?', [id]);
+    res.json({ success: true, message: 'Administrador excluído com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir administrador:', error);
+    res.status(500).json({ error: 'Erro ao excluir administrador' });
+  }
+});
+
 // ==================== ROTAS DE CONTEÚDO ====================
 
 // Obter todo o conteúdo (público)

@@ -11,25 +11,25 @@ export function About({ content = {} }: AboutProps) {
       icon: Target,
       title: "Foco no Aluno",
       description: "Metodologia personalizada para as necessidades de cada estudante",
-      color: "purple",
+      colorClass: "bg-sky-100 text-sky-600 border border-sky-200",
     },
     {
       icon: Award,
       title: "Qualidade Comprovada",
       description: "Professoras com formação em Língua Portuguesa",
-      color: "pink",
+      colorClass: "bg-emerald-100 text-emerald-600 border border-emerald-200",
     },
     {
       icon: Heart,
       title: "Ensino Humanizado",
       description: "Ambiente acolhedor que estimula o aprendizado",
-      color: "purple",
+      colorClass: "bg-rose-100 text-rose-600 border border-rose-200",
     },
     {
       icon: Sparkles,
       title: "Resultados Reais",
       description: "Melhoria comprovada no desempenho escolar",
-      color: "pink",
+      colorClass: "bg-amber-100 text-amber-700 border border-amber-200",
     },
   ];
 
@@ -42,20 +42,20 @@ export function About({ content = {} }: AboutProps) {
               contentKey="about_badge" 
               defaultValue="Sobre o EDUCART" 
               as="span" 
-              className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold block"
+              className="bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-semibold block shadow-sm border border-emerald-200"
             />
           </div>
           <EditableText 
             contentKey="about_title" 
             defaultValue="Sobre o EDUCART" 
             as="h2" 
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 block"
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 block font-display"
           />
           <EditableText 
             contentKey="about_text" 
-            defaultValue="O EDUCART é um espaço dedicado ao reforço escolar, oferecendo suporte educacional personalizado para alunos do 1º ao 9º ano do Ensino Fundamental. Nossa missão é ajudar cada estudante a alcançar seu máximo potencial através de metodologias modernas e acompanhamento individualizado." 
+            defaultValue="O EDUCART é um espaço dedicado ao reforço escolar, oferecendo suporte educacional personalizado para alunos do 1º ao 9º ano do Ensino Fundamental. Nossa missão é ajudar cada estudante a alcançar seu máximo potential através de metodologias modernas e acompanhamento individualizado." 
             as="p" 
-            className="text-lg text-gray-600 max-w-2xl mx-auto block"
+            className="text-lg text-gray-600 max-w-2xl mx-auto block font-medium"
           />
         </div>
 
@@ -68,19 +68,9 @@ export function About({ content = {} }: AboutProps) {
                 className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-2xl border border-gray-100 hover:shadow-lg transition-all transform hover:-translate-y-1"
               >
                 <div
-                  className={`${
-                    feature.color === "purple"
-                      ? "bg-purple-100"
-                      : "bg-pink-100"
-                  } w-12 h-12 rounded-xl flex items-center justify-center mb-4`}
+                  className={`${feature.colorClass} w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm`}
                 >
-                  <Icon
-                    className={`w-6 h-6 ${
-                      feature.color === "purple"
-                        ? "text-purple-600"
-                        : "text-pink-600"
-                    }`}
-                  />
+                  <Icon className="w-6 h-6" />
                 </div>
                 <EditableText 
                   contentKey={`about_feature_title_${index}`} 
@@ -92,14 +82,14 @@ export function About({ content = {} }: AboutProps) {
                   contentKey={`about_feature_desc_${index}`} 
                   defaultValue={feature.description} 
                   as="p" 
-                  className="text-gray-600 block text-sm"
+                  className="text-gray-600 block text-sm font-medium"
                 />
               </div>
             );
           })}
         </div>
 
-        <div className="mt-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl p-8 md:p-12 text-white">
+        <div className="mt-16 bg-[#1559C3] rounded-3xl p-8 md:p-12 text-white shadow-xl shadow-blue-500/10">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
               <EditableText 
@@ -112,7 +102,7 @@ export function About({ content = {} }: AboutProps) {
                 contentKey="about_stat_years_label" 
                 defaultValue="Anos de Ensino" 
                 as="div" 
-                className="text-purple-100 block"
+                className="text-white/90 block font-semibold"
               />
             </div>
             <div>
@@ -126,7 +116,7 @@ export function About({ content = {} }: AboutProps) {
                 contentKey="about_stat_dedication_label" 
                 defaultValue="Dedicação" 
                 as="div" 
-                className="text-purple-100 block"
+                className="text-white/90 block font-semibold"
               />
             </div>
             <div>
@@ -140,7 +130,7 @@ export function About({ content = {} }: AboutProps) {
                 contentKey="about_stat_teachers_label" 
                 defaultValue="Professoras Especializadas" 
                 as="div" 
-                className="text-purple-100 block"
+                className="text-white/90 block font-semibold"
               />
             </div>
           </div>

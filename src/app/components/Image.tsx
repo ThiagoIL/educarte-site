@@ -42,7 +42,7 @@ export const Image: React.FC<ImageProps> = ({
 
   return (
     <div 
-      className={`relative overflow-hidden ${fill ? "w-full h-full min-h-[1px]" : "inline-block"}`}
+      className={`relative overflow-hidden ${fill ? "w-full h-full min-h-[1px]" : "inline-block w-full h-full"}`}
       style={fill ? { position: "relative", width: "100%", height: "100%" } : undefined}
     >
       <img

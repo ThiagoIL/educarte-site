@@ -201,11 +201,15 @@ const executeFallbackQuery = async (sql, params = []) => {
     return [matching];
   }
 
-  // 4. SELECT id, name, email FROM users WHERE id = ?
-  if (norm.includes('select id, name, email from users where id =')) {
-    const id = Number(params[0]);
-    const matching = memoryDb.users.filter(u => u.id === id);
-    return [matching.map(u => ({ id: u.id, name: u.name, email: u.email }))];
+  // 4. SELECT id, name, email FROM users
+  if (norm.includes('select id, name, email from users')) {
+    if (norm.includes('where id =')) {
+      const id = Number(params[0]);
+      const matching = memoryDb.users.filter(u => u.id === id);
+      return [matching.map(u => ({ id: u.id, name: u.name, email: u.email }))];
+    } else {
+      return [memoryDb.users.map(u => ({ id: u.id, name: u.name, email: u.email }))];
+    }
   }
 
   // 5. SELECT content_key, content_value FROM content
@@ -242,6 +246,34 @@ const executeFallbackQuery = async (sql, params = []) => {
     memoryDb.images.push(newImg);
     saveFallbackData();
     return [{ insertId: newId }];
+  }
+
+  // 9. UPDATE users
+  if (norm.includes('update users')) {
+    const id = Number(params[params.length - 1]);
+    const idx = memoryDb.users.findIndex(u => u.id === id);
+    if (idx !== -1) {
+      if (norm.includes('password_hash')) {
+        memoryDb.users[idx].name = params[0];
+        memoryDb.users[idx].email = params[1];
+        memoryDb.users[idx].password_hash = params[2];
+      } else {
+        memoryDb.users[idx].name = params[0];
+        memoryDb.users[idx].email = params[1];
+      }
+      saveFallbackData();
+      return [{ affectedRows: 1 }];
+    }
+    return [{ affectedRows: 0 }];
+  }
+
+  // 10. DELETE FROM users
+  if (norm.includes('delete from users')) {
+    const id = Number(params[0]);
+    const initialLen = memoryDb.users.length;
+    memoryDb.users = memoryDb.users.filter(u => u.id !== id);
+    saveFallbackData();
+    return [{ affectedRows: initialLen - memoryDb.users.length }];
   }
 
   console.warn('⚠️ Query SQL não suportada pelo emulador:', sql, params);
