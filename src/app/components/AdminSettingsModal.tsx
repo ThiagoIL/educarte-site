@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { X, User, Key, Mail, ShieldAlert, Plus, Trash2, Edit2, Upload, Sparkles, Loader2, Save } from "lucide-react";
 import { useAdmin } from "../context/AdminContext";
 import { fetchWithAuth } from "../../config/api";
@@ -237,8 +238,8 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fade-in">
+  return createPortal(
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center z-[100] p-4 animate-fade-in overflow-y-auto">
       <div 
         className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl relative animate-scale-up overflow-hidden"
         onClick={(e) => e.stopPropagation()}
@@ -561,6 +562,7 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
