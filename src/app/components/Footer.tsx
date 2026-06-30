@@ -52,25 +52,29 @@ export function Footer() {
             />
             <div className="flex gap-4">
               <a
-                href="#"
+                href={content?.social_instagram || "#"}
                 onClick={handleLinkClick}
-                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-rose-500"}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-[#1559C3]"}`}
                 aria-label="Instagram"
               >
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href={content?.social_facebook || "#"}
                 onClick={handleLinkClick}
-                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-rose-500"}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-[#1559C3]"}`}
                 aria-label="Facebook"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href={content?.social_email ? `mailto:${content.social_email}` : "#"}
                 onClick={handleLinkClick}
-                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-rose-500"}`}
+                className={`bg-gray-800 p-2 rounded-lg transition-colors ${isAdminMode ? "opacity-50 cursor-not-allowed" : "hover:bg-[#1559C3]"}`}
                 aria-label="E-mail"
               >
                 <Mail className="w-5 h-5" />
@@ -162,7 +166,13 @@ export function Footer() {
 
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
           <p className="flex items-center justify-center gap-1 flex-wrap text-sm">
-            <span>© {currentYear} </span>
+            <span>© </span>
+            <EditableText
+              contentKey="footer_copyright_year"
+              defaultValue={String(currentYear)}
+              as="span"
+              className="text-gray-400 font-inherit block mr-1"
+            />
             <EditableText
               contentKey="footer_copyright"
               defaultValue="EDUCART - Todos os direitos reservados."

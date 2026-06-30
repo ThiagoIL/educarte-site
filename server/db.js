@@ -47,7 +47,10 @@ const defaultContent = {
   contact_subtitle: 'Estamos prontos para ajudar seu filho a ter sucesso',
   contact_phone: '(11) 98765-4321',
   contact_email: 'contato@educart.com.br',
-  contact_address: 'Rua das Flores, 123 - São Paulo, SP'
+  contact_address: 'Rua das Flores, 123 - São Paulo, SP',
+  social_instagram: 'https://instagram.com/educart',
+  social_facebook: 'https://facebook.com/educart',
+  social_email: 'contato@educart.com.br'
 };
 
 const initFallbackData = () => {

@@ -9,6 +9,24 @@ interface EditableTextProps {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "p" | "span" | "div";
 }
 
+const maskPhone = (value: string): string => {
+  if (!value) return "";
+  let digits = value.replace(/\D/g, "");
+  if (digits.length > 11) {
+    digits = digits.slice(0, 11);
+  }
+  if (digits.length <= 2) {
+    return digits.length > 0 ? `(${digits}` : "";
+  }
+  if (digits.length <= 6) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  }
+  if (digits.length <= 10) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  }
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+};
+
 export const EditableText: React.FC<EditableTextProps> = ({
   contentKey,
   defaultValue,
@@ -24,6 +42,14 @@ export const EditableText: React.FC<EditableTextProps> = ({
   useEffect(() => {
     setTempValue(currentValue);
   }, [currentValue]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    let val = e.target.value;
+    if (contentKey.includes("phone")) {
+      val = maskPhone(val);
+    }
+    setTempValue(val);
+  };
 
   const handleSave = () => {
     updateContent(contentKey, tempValue);
@@ -44,7 +70,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
       <div className={`relative inline-block w-full ${className}`}>
         <textarea
           value={tempValue}
-          onChange={(e) => setTempValue(e.target.value)}
+          onChange={handleInputChange}
           className="w-full bg-white text-gray-800 border-2 border-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-200 outline-none resize-y min-h-[40px] font-inherit"
           rows={Math.max(2, tempValue.split("\n").length)}
           autoFocus

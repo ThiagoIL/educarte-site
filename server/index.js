@@ -109,7 +109,10 @@ const mockContent = {
   contact_subtitle: 'Estamos prontos para atender você!',
   contact_phone: '(11) 99999-9999',
   contact_email: 'contato@educart.com.br',
-  contact_address: 'Rua Exemplo, 123 - São Paulo, SP'
+  contact_address: 'Rua Exemplo, 123 - São Paulo, SP',
+  social_instagram: 'https://instagram.com/educart',
+  social_facebook: 'https://facebook.com/educart',
+  social_email: 'contato@educart.com.br'
 };
 
 // ==================== ROTAS DE AUTENTICAÇÃO ====================

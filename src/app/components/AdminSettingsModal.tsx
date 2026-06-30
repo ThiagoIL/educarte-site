@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { X, User, Key, Mail, ShieldAlert, Plus, Trash2, Edit2, Upload, Sparkles, Loader2, Save } from "lucide-react";
+import { X, User, Key, Mail, ShieldAlert, Plus, Trash2, Edit2, Upload, Sparkles, Loader2, Save, Globe, Instagram, Facebook } from "lucide-react";
 import { useAdmin } from "../context/AdminContext";
 import { fetchWithAuth } from "../../config/api";
 import { toast } from "sonner";
@@ -17,10 +17,16 @@ interface AdminUser {
 }
 
 export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsModalProps) {
-  const { content, uploadImage, saveChanges, saving } = useAdmin();
-  const [activeTab, setActiveTab] = useState<"users" | "logo" | "favicon">("users");
+  const { content, uploadImage, saveChanges, saving, updateContent } = useAdmin();
+  const [activeTab, setActiveTab] = useState<"users" | "logo" | "favicon" | "social">("users");
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
+
+  // Social links states
+  const [socialInstagram, setSocialInstagram] = useState("");
+  const [socialFacebook, setSocialFacebook] = useState("");
+  const [socialEmail, setSocialEmail] = useState("");
+  const [isSavingSocial, setIsSavingSocial] = useState(false);
   
   // States for the user management form
   const [isEditing, setIsEditing] = useState(false);
@@ -48,6 +54,30 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
       loadUsers();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && content) {
+      setSocialInstagram(content.social_instagram || "");
+      setSocialFacebook(content.social_facebook || "");
+      setSocialEmail(content.social_email || "");
+    }
+  }, [isOpen, content]);
+
+  const handleSocialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingSocial(true);
+    try {
+      await updateContent("social_instagram", socialInstagram, false);
+      await updateContent("social_facebook", socialFacebook, false);
+      await updateContent("social_email", socialEmail, false);
+      toast.success("Links das redes sociais atualizados com sucesso!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao atualizar os links das redes sociais.");
+    } finally {
+      setIsSavingSocial(false);
+    }
+  };
 
   const loadUsers = async () => {
     setLoadingUsers(true);
@@ -292,6 +322,17 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
           >
             <Sparkles className="w-4 h-4" />
             Mudar Favicon (Ícone)
+          </button>
+          <button
+            onClick={() => setActiveTab("social")}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === "social" 
+                ? "bg-purple-600 text-white shadow-md shadow-purple-200" 
+                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+            }`}
+          >
+            <Globe className="w-4 h-4" />
+            Redes Sociais
           </button>
         </div>
 
@@ -557,6 +598,83 @@ export default function AdminSettingsModal({ isOpen, onClose }: AdminSettingsMod
                     💡 Dica: Após fazer o upload, clique no botão <span className="bg-green-500 text-white font-bold px-2 py-0.5 rounded">Salvar Alterações</span> no banner superior da página para gravar de forma permanente!
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "social" && (
+            <div className="space-y-6 py-4 animate-fade-in">
+              <div className="max-w-md mx-auto space-y-4">
+                <div className="text-center">
+                  <h3 className="font-bold text-gray-800 text-lg flex items-center justify-center gap-2">
+                    <Globe className="w-5 h-5 text-purple-600" />
+                    Gerenciar Redes Sociais
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Insira os links completos das redes sociais para atualizar os ícones no rodapé da página.
+                  </p>
+                </div>
+
+                <form onSubmit={handleSocialSubmit} className="space-y-4 pt-2">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-600 uppercase flex items-center gap-1.5">
+                      <Instagram className="w-4 h-4 text-pink-600" />
+                      Link do Instagram
+                    </label>
+                    <input
+                      type="url"
+                      value={socialInstagram}
+                      onChange={(e) => setSocialInstagram(e.target.value)}
+                      placeholder="https://instagram.com/seu-perfil"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-600 uppercase flex items-center gap-1.5">
+                      <Facebook className="w-4 h-4 text-blue-600" />
+                      Link do Facebook
+                    </label>
+                    <input
+                      type="url"
+                      value={socialFacebook}
+                      onChange={(e) => setSocialFacebook(e.target.value)}
+                      placeholder="https://facebook.com/sua-pagina"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-600 uppercase flex items-center gap-1.5">
+                      <Mail className="w-4 h-4 text-purple-600" />
+                      E-mail de Contato
+                    </label>
+                    <input
+                      type="email"
+                      value={socialEmail}
+                      onChange={(e) => setSocialEmail(e.target.value)}
+                      placeholder="contato@educart.com.br"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSavingSocial}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white rounded-xl font-bold shadow-md hover:shadow-lg transition-all cursor-pointer mt-6"
+                  >
+                    {isSavingSocial ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <Save className="w-5 h-5" />
+                    )}
+                    {isSavingSocial ? "Salvando Links..." : "Salvar Redes Sociais"}
+                  </button>
+                </form>
+
+                <div className="text-xs text-amber-600 bg-amber-50 rounded-xl p-3 border border-amber-100 mt-4 font-semibold">
+                  💡 Dica: Após salvar, clique também no botão <span className="bg-green-500 text-white font-bold px-2 py-0.5 rounded">Salvar Alterações</span> no topo da página principal para garantir que todo o estado do site esteja sincronizado!
+                </div>
               </div>
             </div>
           )}

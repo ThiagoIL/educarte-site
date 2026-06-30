@@ -35,31 +35,32 @@ export function Teachers({ content = {} }: TeachersProps) {
 
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
           {/* Professora 1 */}
-          <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
-            <div className="relative h-80">
+          <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 flex flex-col">
+            <div className="relative h-80 bg-gray-50">
               <EditableImage
                 contentKey="teacher1_image"
                 defaultSrc="https://images.unsplash.com/photo-1551989745-347c28b620e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFjaGVyJTIwd29tYW4lMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzY4MjM0OTU3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Profª. Ana Paula Silva"
                 className="w-full h-full object-cover rounded-t-3xl"
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 z-10">
+            </div>
+ 
+            <div className="p-6 space-y-4 flex-grow flex flex-col">
+              <div className="border-b border-gray-100 pb-3">
                 <EditableText 
                   contentKey="teacher1_name" 
                   defaultValue="Profª. Ana Paula Silva" 
                   as="h3" 
-                  className="text-2xl font-bold text-white mb-1 block"
+                  className="text-2xl font-bold text-gray-900 mb-1 block font-display"
                 />
                 <EditableText 
                   contentKey="teacher1_title" 
                   defaultValue="Especialista em Língua Portuguesa" 
                   as="p" 
-                  className="text-emerald-200 block text-sm font-semibold"
+                  className="text-purple-600 block text-sm font-semibold"
                 />
               </div>
-            </div>
 
-            <div className="p-6 space-y-4">
               <EditableText 
                 contentKey="teacher1_bio" 
                 defaultValue="Formada em Letras - Língua Portuguesa, com mais de 10 anos de experiência em educação e reforço escolar." 
@@ -107,31 +108,32 @@ export function Teachers({ content = {} }: TeachersProps) {
           </div>
 
           {/* Professora 2 */}
-          <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
-            <div className="relative h-80">
+          <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 flex flex-col">
+            <div className="relative h-80 bg-gray-50">
               <EditableImage
                 contentKey="teacher2_image"
                 defaultSrc="https://images.unsplash.com/photo-1544191046-397b734b0891?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFjaGVyJTIwY2xhc3Nyb29tJTIwZWR1Y2F0aW9ufGVufDF8fHx8MTc2ODI3MDUyMXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Profª. Maria Eduarda Costa"
                 className="w-full h-full object-cover rounded-t-3xl"
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 z-10">
+            </div>
+ 
+            <div className="p-6 space-y-4 flex-grow flex flex-col">
+              <div className="border-b border-gray-100 pb-3">
                 <EditableText 
                   contentKey="teacher2_name" 
                   defaultValue="Profª. Maria Eduarda Costa" 
                   as="h3" 
-                  className="text-2xl font-bold text-white mb-1 block"
+                  className="text-2xl font-bold text-gray-900 mb-1 block font-display"
                 />
                 <EditableText 
                   contentKey="teacher2_title" 
                   defaultValue="Especialista em Língua Portuguesa" 
                   as="p" 
-                  className="text-emerald-200 block text-sm font-semibold"
+                  className="text-purple-600 block text-sm font-semibold"
                 />
               </div>
-            </div>
 
-            <div className="p-6 space-y-4">
               <EditableText 
                 contentKey="teacher2_bio" 
                 defaultValue="Graduada em Letras - Língua Portuguesa, apaixonada por ensinar e desenvolver o potencial de cada aluno." 

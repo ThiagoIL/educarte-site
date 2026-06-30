@@ -38,8 +38,31 @@ export function Contact({ content: propContent = {} }: ContactProps) {
     setFormData({ name: "", email: "", phone: "", grade: "", message: "" });
   };
 
+  const maskPhone = (value: string): string => {
+    if (!value) return "";
+    let digits = value.replace(/\D/g, "");
+    if (digits.length > 11) {
+      digits = digits.slice(0, 11);
+    }
+    if (digits.length <= 2) {
+      return digits.length > 0 ? `(${digits}` : "";
+    }
+    if (digits.length <= 6) {
+      return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    }
+    if (digits.length <= 10) {
+      return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    }
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "phone") {
+      setFormData({ ...formData, [name]: maskPhone(value) });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   return (

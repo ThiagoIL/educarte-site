@@ -5,7 +5,7 @@ import { API_URL, fetchWithAuth, uploadFile, deleteFile } from "../../config/api
 interface AdminContextType {
   isAdminMode: boolean;
   content: Record<string, any>;
-  updateContent: (key: string, value: string) => Promise<void>;
+  updateContent: (key: string, value: string, showToast?: boolean) => Promise<void>;
   uploadImage: (file: File, key: string, oldImageUrl?: string) => Promise<string | null>;
   removeImage: (key: string) => Promise<void>;
   saveChanges: () => Promise<void>;
@@ -59,7 +59,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
     }
   };
 
-  const updateContent = async (key: string, value: string) => {
+  const updateContent = async (key: string, value: string, showToast = true) => {
     // Atualiza o estado local imediatamente para uma interface ágil e responsiva
     setContent((prev) => ({ ...prev, [key]: value }));
 
@@ -75,10 +75,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode; forceAdmin?: b
       if (!response.ok) {
         throw new Error("Erro ao salvar no servidor");
       }
-      toast.success("Salvo com sucesso!");
+      if (showToast) {
+        toast.success("Salvo com sucesso!");
+      }
     } catch (error) {
       console.error(`Erro ao salvar conteúdo para a chave ${key}:`, error);
-      toast.error("Erro ao salvar alteração no banco de dados.");
+      if (showToast) {
+        toast.error("Erro ao salvar alteração no banco de dados.");
+      }
+      throw error;
     }
   };
 
